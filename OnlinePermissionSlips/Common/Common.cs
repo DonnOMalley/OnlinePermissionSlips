@@ -13,6 +13,7 @@ namespace OnlinePermissionSlips
 	public static class Common
 	{
 		public enum ApprovalStatusTypes { Approved = 0, Pending = 1, Not_Approved = 2};
+		public const string MailGunAPIUrl = "https://api.mailgun.net/v3";
 
 		public static void EnsureUserIsAuthenticated(IPrincipal User)
 		{

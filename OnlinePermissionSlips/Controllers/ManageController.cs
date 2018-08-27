@@ -123,12 +123,12 @@ namespace OnlinePermissionSlips.Controllers
 			else if (User.IsInRole("School Admin"))
 			{
 				AspNetUser aspNetUser = EntityDB.AspNetUsers.Where(a => a.Id == userId).FirstOrDefault();
-				if(aspNetUser == null) { throw new Exception("Unable to locate user account by ID"); }
+				if (aspNetUser == null) { throw new Exception("Unable to locate user account by ID"); }
 				UserSchools = aspNetUser.Schools.ToList();
 				UserStudents = new List<Student>();
 				UserClasses = new List<ClassRoom>();
 			}
-			else if(User.IsInRole("System Admin"))
+			else if (User.IsInRole("System Admin"))
 			{
 				UserSchools = new List<School>();
 				UserStudents = new List<Student>();
@@ -146,6 +146,7 @@ namespace OnlinePermissionSlips.Controllers
 				TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
 				Logins = await UserManager.GetLoginsAsync(userId),
 				BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
+				IsSubscribed = MailGunUtility.IsSubscribed(user.Email),
 				Email = user.Email,
 				FirstName = user.FirstName,
 				LastName = user.LastName,
@@ -158,7 +159,30 @@ namespace OnlinePermissionSlips.Controllers
 
 			return View(model);
 		}
-		
+
+		[HttpGet]
+		public ActionResult ResubscribeEmails()
+		{
+			return View();
+		}
+		[HttpPost, ActionName("ResubscribeEmails")]
+		public ActionResult ResubscribeConfirmed()
+		{
+			string userId = "";
+			ApplicationUser user = null;
+			bool UnsubscribeDeleted = false;
+			try
+			{
+				userId = User.Identity.GetUserId();
+				user = UserManager.FindById(userId);
+
+				UnsubscribeDeleted = MailGunUtility.DeleteUnsubscribed(user.Email);
+			}
+			catch (Exception) { } //Throw it away as it will just redirect to Index
+
+			return RedirectToAction("Index");
+		}
+
 		[HttpGet]
 		public ActionResult AddStudent(int? id)
 		{
@@ -176,15 +200,15 @@ namespace OnlinePermissionSlips.Controllers
 			{
 				try
 				{
-					if(model.ID != null)
+					if (model.ID != null)
 					{
 						existingStudent = EntityDB.Students.Find(model.ID);
 					}
 
 					student = EntityDB.Students.Where(s => s.StudentNumber == model.StudentNumber).FirstOrDefault();
-					if(existingStudent != null && student != null)
+					if (existingStudent != null && student != null)
 					{
-						if(existingStudent.StudentNumber != student.StudentNumber || existingStudent.FullName != student.FullName || existingStudent.SchoolID != student.SchoolID)
+						if (existingStudent.StudentNumber != student.StudentNumber || existingStudent.FullName != student.FullName || existingStudent.SchoolID != student.SchoolID)
 						{
 							throw new Exception("Student cannot be verified. Double check information and try again. Contact the school administrator if the issues persists");
 						}

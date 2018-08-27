@@ -674,6 +674,7 @@
     <Content Include="Views\SystemConfigurations\Details.cshtml" />
     <Content Include="Views\SystemConfigurations\Edit.cshtml" />
     <Content Include="Views\SystemConfigurations\Index.cshtml" />
+    <Content Include="Views\Manage\ResubscribeEmails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

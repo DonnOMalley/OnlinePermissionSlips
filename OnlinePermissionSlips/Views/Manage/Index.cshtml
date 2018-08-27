@@ -90,7 +90,14 @@
 		<dt>@Html.LabelFor(m => m.LastName, new { @class = "control-label" }):</dt>
 		<dd>@Html.DisplayFor(m => m.LastName)</dd>
 		<dt>@Html.LabelFor(m => m.Email, new { @class = "control-label" }):</dt>
-		<dd>@Html.DisplayFor(m => m.Email)</dd>
+		<dd>
+			@Html.DisplayFor(m => m.Email) 
+			@if (!Model.IsSubscribed)
+			{
+				@Html.ActionLink("[Unsubscribed - Click to Resubscribe]", "ResubscribeEmails")
+				<p>Email Addresses that are unsubscribed will not receive email notifications at all from this system.</p>
+			}
+			</dd>
 		<dt>@Html.LabelFor(m => m.Roles, new { @class = "control-label" }):</dt>
 		<dd>
 			@foreach (var role in Model.Roles)
