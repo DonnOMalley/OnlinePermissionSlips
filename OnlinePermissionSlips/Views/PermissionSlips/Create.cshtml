@@ -1,0 +1,158 @@
+﻿@model OnlinePermissionSlips.Models.DAL.CreatePermissionSlip
+
+@{
+	ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+
+	<div class="form-horizontal">
+		<h4>PermissionSlip</h4>
+		<hr />
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+		@*@if (Model.ClassRoom != null)
+		{
+			@Html.HiddenFor(model => model.SchoolID);
+			@Html.HiddenFor(model => model.ClassRoomID);
+
+
+			<div class="form-group">
+				@Html.LabelFor(model => model.PermissionSlipTemplateID, htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					@Html.DropDownList("PermissionSlipTemplateID", null, "Select Template", htmlAttributes: new { @class = "form-control", @onchange = "javascript:TemplateSelected(this.value);" })
+					@Html.ValidationMessageFor(model => model.PermissionSlipTemplateID, "", new { @class = "text-danger" })
+					<input type="checkbox" id="chkTemplateBySchool" value="0" title="Check to only show templates for the class" onchange="LimitChanged()" />Limit Templates by School and Classroom
+				</div>
+			</div>
+		}
+		else
+		{*@
+			<div class="form-group">
+				@Html.LabelFor(model => model.ClassRoom.SchoolID, htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					@Html.DropDownList("SchoolID", null, "Select School", htmlAttributes: new { @class = "form-control", @onchange = "javascript:SchoolSelected(this.value);" })
+					@Html.ValidationMessageFor(model => model.ClassRoom.SchoolID, "", new { @class = "text-danger" })
+					<input type="checkbox" id="chkTemplateBySchool" value="0" title="Check to only show templates for the class" onchange="LimitChanged()" />Limit Templates by School and Classroom
+				</div>
+			</div>
+
+			<div class="form-group">
+				@Html.LabelFor(model => model.ClassRoomID, htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					@Html.DropDownList("ClassRoomID", null, "Select Class Room", htmlAttributes: new { @class = "form-control", @disabled = "disabled", @onchange = "javascript:ClassSelected(this.value);" })
+					@Html.ValidationMessageFor(model => model.ClassRoomID, "", new { @class = "text-danger" })
+				</div>
+			</div>
+
+			<div class="form-group">
+				@Html.LabelFor(model => model.PermissionSlipTemplateID, htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					@Html.DropDownList("PermissionSlipTemplateID", null, "Select Template", htmlAttributes: new { @class = "form-control", @disabled = "disabled", @onchange = "javascript:TemplateSelected(this.value);" })
+					@Html.ValidationMessageFor(model => model.PermissionSlipTemplateID, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		@*}*@
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.PermissionSlipCategoryID, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.DropDownList("PermissionSlipCategoryID", null, "Select Category", htmlAttributes: new { @class = "form-control" })
+				@Html.ValidationMessageFor(model => model.PermissionSlipCategoryID, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Location, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Location, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Location, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.StartDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.EndDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Cost, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Cost, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Cost, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.RequireChaperone, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				<div class="checkbox">
+					@Html.EditorFor(model => model.RequireChaperone)
+					@Html.ValidationMessageFor(model => model.RequireChaperone, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.RequireChaperoneBackgroundCheck, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				<div class="checkbox">
+					@Html.EditorFor(model => model.RequireChaperoneBackgroundCheck)
+					@Html.ValidationMessageFor(model => model.RequireChaperoneBackgroundCheck, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.EmailGuardians, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				<div class="checkbox">
+					@Html.EditorFor(model => model.EmailGuardians)
+					@Html.ValidationMessageFor(model => model.EmailGuardians, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<input id="createButton" type="submit" value="Create" class="btn btn-default" />
+			</div>
+		</div>
+	</div>
+}
+
+<div>
+	@Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+	<script type="text/javascript" src="~/Scripts/ViewModelScripts/CreatePermissionSlip.js"></script>
+	<script type="text/javascript">
+		SchoolSelected($('#SchoolID').val());
+	</script>
+}

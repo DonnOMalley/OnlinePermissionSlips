@@ -1,0 +1,1549 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="OnlinePermissionSlipsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="RoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar(max)" />
+          <Property Name="MiddleName" Type="nvarchar(max)" />
+          <Property Name="LastName" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="UserDefined" Type="bit" Nullable="false" />
+          <Property Name="SchoolID" Type="int" />
+        </EntityType>
+        <EntityType Name="ClassRoom">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoomNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="SchoolID" Type="int" Nullable="false" />
+          <Property Name="TeacherUserID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="DisabledDateTime" Type="datetime2" Precision="7" />
+          <Property Name="CreateDateTime" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ModifiedDateTime" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ConsistencyCheck" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GuardianApproval">
+          <Key>
+            <PropertyRef Name="PermissionSlipID" />
+            <PropertyRef Name="StudentID" />
+          </Key>
+          <Property Name="PermissionSlipID" Type="int" Nullable="false" />
+          <Property Name="StudentID" Type="int" Nullable="false" />
+          <Property Name="GuardianUserID" Type="nvarchar" MaxLength="128" />
+          <Property Name="GuardianName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="GuardianEmail" Type="nvarchar" MaxLength="500" />
+          <Property Name="Approved" Type="bit" Nullable="false" />
+          <Property Name="CanChaperone" Type="bit" Nullable="false" />
+          <Property Name="SpecialHealthDietaryAccessConsiderations" Type="nvarchar(max)" />
+          <Property Name="DaytimePhone" Type="nvarchar" MaxLength="25" />
+          <Property Name="EmergencyPhone" Type="nvarchar" MaxLength="25" />
+          <Property Name="Signature" Type="varbinary(max)" Nullable="false" />
+          <Property Name="CreatedDateTime" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Guardians">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="StudentID" />
+          </Key>
+          <Property Name="UserID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="StudentID" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'OnlinePermissionSlip.dbo.GuardianTempEmails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="GuardianTempEmails">
+          <Key>
+            <PropertyRef Name="GuardianTempEmailID" />
+            <PropertyRef Name="StudentID" />
+            <PropertyRef Name="EmailAddress" />
+          </Key>
+          <Property Name="GuardianTempEmailID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StudentID" Type="int" Nullable="false" />
+          <Property Name="EmailAddress" Type="nvarchar" MaxLength="1024" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PermissionSlip">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PermissionSlipCategoryID" Type="int" Nullable="false" />
+          <Property Name="PermissionSlipTemplateID" Type="int" />
+          <Property Name="ClassRoomID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Location" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="StartDateTime" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="EndDateTime" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Cost" Type="money" Nullable="false" />
+          <Property Name="RequireChaperone" Type="bit" Nullable="false" />
+          <Property Name="RequireChaperoneBackgroundCheck" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Schools">
+          <Key>
+            <PropertyRef Name="SchoolID" />
+          </Key>
+          <Property Name="SchoolID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SchoolName" Type="nvarchar" MaxLength="1024" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StudentNumber" Type="int" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Guardian1TempEmail" Type="nvarchar" MaxLength="512" />
+          <Property Name="Guardian2TempEmail" Type="nvarchar" MaxLength="512" />
+          <Property Name="ClassRoomID" Type="int" Nullable="false" />
+          <Property Name="SchoolID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SystemConfiguration">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmailDomain" Type="nvarchar" MaxLength="1024" Nullable="false" />
+          <Property Name="EmailAPIKey" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DefaultFromAddress" Type="nvarchar" MaxLength="1024" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Template">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SchoolID" Type="int" />
+          <Property Name="ClassRoomID" Type="int" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Location" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Cost" Type="money" />
+          <Property Name="RequireChaperone" Type="bit" Nullable="false" />
+          <Property Name="RequireChaperoneBackgroundCheck" Type="bit" Nullable="false" />
+          <Property Name="DisabledDateTime" Type="datetime2" Precision="7" />
+          <Property Name="CreateDateTime" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ModifiedDateTime" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ConsistencyCheck" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserSchools">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="SchoolID" />
+          </Key>
+          <Property Name="UserID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="SchoolID" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'OnlinePermissionSlip.dbo.GuardianPermissionSlipsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="GuardianPermissionSlipsView">
+          <Key>
+            <PropertyRef Name="SchoolID" />
+            <PropertyRef Name="SchoolName" />
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="EmailConfirmed" />
+            <PropertyRef Name="RoleName" />
+            <PropertyRef Name="ClassID" />
+            <PropertyRef Name="RoomNumber" />
+            <PropertyRef Name="TeacherUserID" />
+            <PropertyRef Name="EventID" />
+            <PropertyRef Name="EventName" />
+            <PropertyRef Name="EventLocation" />
+            <PropertyRef Name="StartDateTime" />
+            <PropertyRef Name="EndDateTime" />
+            <PropertyRef Name="Cost" />
+            <PropertyRef Name="RequireChaperone" />
+            <PropertyRef Name="RequireChaperoneBackgroundCheck" />
+            <PropertyRef Name="StudentID" />
+            <PropertyRef Name="StudentName" />
+          </Key>
+          <Property Name="SchoolID" Type="int" Nullable="false" />
+          <Property Name="SchoolName" Type="nvarchar" MaxLength="1024" Nullable="false" />
+          <Property Name="UserID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar(max)" />
+          <Property Name="MiddleName" Type="nvarchar(max)" />
+          <Property Name="LastName" Type="nvarchar(max)" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="ClassID" Type="int" Nullable="false" />
+          <Property Name="RoomNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="TeacherUserID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="EventID" Type="int" Nullable="false" />
+          <Property Name="EventName" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="EventLocation" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="StartDateTime" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="EndDateTime" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Cost" Type="money" Nullable="false" />
+          <Property Name="RequireChaperone" Type="bit" Nullable="false" />
+          <Property Name="RequireChaperoneBackgroundCheck" Type="bit" Nullable="false" />
+          <Property Name="Approved" Type="bit" />
+          <Property Name="GuardianName" Type="nvarchar" MaxLength="500" />
+          <Property Name="CanChaperone" Type="bit" />
+          <Property Name="SpecialHealthDietaryAccessConsiderations" Type="nvarchar(max)" />
+          <Property Name="DaytimePhone" Type="nvarchar" MaxLength="25" />
+          <Property Name="EmergencyPhone" Type="nvarchar" MaxLength="25" />
+          <Property Name="CreatedDateTime" Type="datetime2" Precision="7" />
+          <Property Name="GuardianApprovalSignature" Type="varbinary(max)" />
+          <Property Name="StudentID" Type="int" Nullable="false" />
+          <Property Name="StudentName" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="ClassName" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'OnlinePermissionSlip.dbo.TeacherPermissionSlipsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TeacherPermissionSlipsView">
+          <Key>
+            <PropertyRef Name="SchoolID" />
+            <PropertyRef Name="SchoolName" />
+            <PropertyRef Name="EmailConfirmed" />
+            <PropertyRef Name="RoleName" />
+            <PropertyRef Name="ClassID" />
+            <PropertyRef Name="RoomNumber" />
+            <PropertyRef Name="TeacherUserID" />
+            <PropertyRef Name="StudentID" />
+            <PropertyRef Name="StudentNumber" />
+            <PropertyRef Name="StudentName" />
+            <PropertyRef Name="EventID" />
+            <PropertyRef Name="EventName" />
+            <PropertyRef Name="EventLocation" />
+            <PropertyRef Name="StartDateTime" />
+            <PropertyRef Name="EndDateTime" />
+            <PropertyRef Name="Cost" />
+            <PropertyRef Name="RequireChaperone" />
+            <PropertyRef Name="RequireChaperoneBackgroundCheck" />
+          </Key>
+          <Property Name="SchoolID" Type="int" Nullable="false" />
+          <Property Name="SchoolName" Type="nvarchar" MaxLength="1024" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar(max)" />
+          <Property Name="MiddleName" Type="nvarchar(max)" />
+          <Property Name="LastName" Type="nvarchar(max)" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="ClassID" Type="int" Nullable="false" />
+          <Property Name="RoomNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="TeacherUserID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="StudentID" Type="int" Nullable="false" />
+          <Property Name="StudentNumber" Type="int" Nullable="false" />
+          <Property Name="StudentName" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="EventID" Type="int" Nullable="false" />
+          <Property Name="EventName" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="EventLocation" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="StartDateTime" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="EndDateTime" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Cost" Type="money" Nullable="false" />
+          <Property Name="RequireChaperone" Type="bit" Nullable="false" />
+          <Property Name="RequireChaperoneBackgroundCheck" Type="bit" Nullable="false" />
+          <Property Name="Approved" Type="bit" />
+          <Property Name="GuardianName" Type="nvarchar" MaxLength="500" />
+          <Property Name="CanChaperone" Type="bit" />
+          <Property Name="SpecialHealthDietaryAccessConsiderations" Type="nvarchar(max)" />
+          <Property Name="DaytimePhone" Type="nvarchar" MaxLength="25" />
+          <Property Name="EmergencyPhone" Type="nvarchar" MaxLength="25" />
+          <Property Name="CreatedDateTime" Type="datetime2" Precision="7" />
+          <Property Name="GuardianApprovalSignature" Type="varbinary(max)" />
+          <Property Name="ClassName" Type="nvarchar(max)" />
+        </EntityType>
+        <Association Name="FK_Category_Schools">
+          <End Role="Schools" Type="Self.Schools" Multiplicity="0..1" />
+          <End Role="Category" Type="Self.Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Schools">
+              <PropertyRef Name="SchoolID" />
+            </Principal>
+            <Dependent Role="Category">
+              <PropertyRef Name="SchoolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClassRoom_Schools">
+          <End Role="Schools" Type="Self.Schools" Multiplicity="1" />
+          <End Role="ClassRoom" Type="Self.ClassRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Schools">
+              <PropertyRef Name="SchoolID" />
+            </Principal>
+            <Dependent Role="ClassRoom">
+              <PropertyRef Name="SchoolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRoles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GuardianApproval_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="GuardianApproval" Type="Self.GuardianApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GuardianApproval">
+              <PropertyRef Name="GuardianUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GuardianApproval_PermissionSlip">
+          <End Role="PermissionSlip" Type="Self.PermissionSlip" Multiplicity="1" />
+          <End Role="GuardianApproval" Type="Self.GuardianApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PermissionSlip">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GuardianApproval">
+              <PropertyRef Name="PermissionSlipID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GuardianApproval_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="1" />
+          <End Role="GuardianApproval" Type="Self.GuardianApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GuardianApproval">
+              <PropertyRef Name="StudentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Guardians_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Guardians" Type="Self.Guardians" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Guardians">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Guardians_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="1" />
+          <End Role="Guardians" Type="Self.Guardians" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Guardians">
+              <PropertyRef Name="StudentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GuardianTempEmails_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="1" />
+          <End Role="GuardianTempEmails" Type="Self.GuardianTempEmails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GuardianTempEmails">
+              <PropertyRef Name="StudentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PermissionSlip_Category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="PermissionSlip" Type="Self.PermissionSlip" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PermissionSlip">
+              <PropertyRef Name="PermissionSlipCategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PermissionSlip_ClassRoom">
+          <End Role="ClassRoom" Type="Self.ClassRoom" Multiplicity="1" />
+          <End Role="PermissionSlip" Type="Self.PermissionSlip" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClassRoom">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PermissionSlip">
+              <PropertyRef Name="ClassRoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PermissionSlip_Template">
+          <End Role="Template" Type="Self.Template" Multiplicity="0..1" />
+          <End Role="PermissionSlip" Type="Self.PermissionSlip" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Template">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PermissionSlip">
+              <PropertyRef Name="PermissionSlipTemplateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_ClassRoom">
+          <End Role="ClassRoom" Type="Self.ClassRoom" Multiplicity="1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClassRoom">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="ClassRoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Schools">
+          <End Role="Schools" Type="Self.Schools" Multiplicity="1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Schools">
+              <PropertyRef Name="SchoolID" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="SchoolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Template_Category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="Template" Type="Self.Template" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Template">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Template_ClassRoom">
+          <End Role="ClassRoom" Type="Self.ClassRoom" Multiplicity="0..1" />
+          <End Role="Template" Type="Self.Template" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClassRoom">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Template">
+              <PropertyRef Name="ClassRoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Template_Schools">
+          <End Role="Schools" Type="Self.Schools" Multiplicity="0..1" />
+          <End Role="Template" Type="Self.Template" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Schools">
+              <PropertyRef Name="SchoolID" />
+            </Principal>
+            <Dependent Role="Template">
+              <PropertyRef Name="SchoolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserSchools_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="UserSchools" Type="Self.UserSchools" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserSchools">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserSchools_Schools">
+          <End Role="Schools" Type="Self.Schools" Multiplicity="1" />
+          <End Role="UserSchools" Type="Self.UserSchools" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Schools">
+              <PropertyRef Name="SchoolID" />
+            </Principal>
+            <Dependent Role="UserSchools">
+              <PropertyRef Name="SchoolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="OnlinePermissionSlipsModelStoreContainer">
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClassRoom" EntityType="Self.ClassRoom" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GuardianApproval" EntityType="Self.GuardianApproval" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Guardians" EntityType="Self.Guardians" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PermissionSlip" EntityType="Self.PermissionSlip" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Schools" EntityType="Self.Schools" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Student" EntityType="Self.Student" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemConfiguration" EntityType="Self.SystemConfiguration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Template" EntityType="Self.Template" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserSchools" EntityType="Self.UserSchools" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GuardianTempEmails" EntityType="Self.GuardianTempEmails" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [GuardianTempEmails].[GuardianTempEmailID] AS [GuardianTempEmailID], 
+    [GuardianTempEmails].[StudentID] AS [StudentID], 
+    [GuardianTempEmails].[EmailAddress] AS [EmailAddress]
+    FROM [dbo].[GuardianTempEmails] AS [GuardianTempEmails]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="GuardianPermissionSlipsView" EntityType="Self.GuardianPermissionSlipsView" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [GuardianPermissionSlipsView].[SchoolID] AS [SchoolID], 
+    [GuardianPermissionSlipsView].[SchoolName] AS [SchoolName], 
+    [GuardianPermissionSlipsView].[UserID] AS [UserID], 
+    [GuardianPermissionSlipsView].[FirstName] AS [FirstName], 
+    [GuardianPermissionSlipsView].[MiddleName] AS [MiddleName], 
+    [GuardianPermissionSlipsView].[LastName] AS [LastName], 
+    [GuardianPermissionSlipsView].[Email] AS [Email], 
+    [GuardianPermissionSlipsView].[EmailConfirmed] AS [EmailConfirmed], 
+    [GuardianPermissionSlipsView].[PhoneNumber] AS [PhoneNumber], 
+    [GuardianPermissionSlipsView].[RoleName] AS [RoleName], 
+    [GuardianPermissionSlipsView].[ClassID] AS [ClassID], 
+    [GuardianPermissionSlipsView].[RoomNumber] AS [RoomNumber], 
+    [GuardianPermissionSlipsView].[TeacherUserID] AS [TeacherUserID], 
+    [GuardianPermissionSlipsView].[EventID] AS [EventID], 
+    [GuardianPermissionSlipsView].[EventName] AS [EventName], 
+    [GuardianPermissionSlipsView].[EventLocation] AS [EventLocation], 
+    [GuardianPermissionSlipsView].[StartDateTime] AS [StartDateTime], 
+    [GuardianPermissionSlipsView].[EndDateTime] AS [EndDateTime], 
+    [GuardianPermissionSlipsView].[Cost] AS [Cost], 
+    [GuardianPermissionSlipsView].[RequireChaperone] AS [RequireChaperone], 
+    [GuardianPermissionSlipsView].[RequireChaperoneBackgroundCheck] AS [RequireChaperoneBackgroundCheck], 
+    [GuardianPermissionSlipsView].[Approved] AS [Approved], 
+    [GuardianPermissionSlipsView].[GuardianName] AS [GuardianName], 
+    [GuardianPermissionSlipsView].[CanChaperone] AS [CanChaperone], 
+    [GuardianPermissionSlipsView].[SpecialHealthDietaryAccessConsiderations] AS [SpecialHealthDietaryAccessConsiderations], 
+    [GuardianPermissionSlipsView].[DaytimePhone] AS [DaytimePhone], 
+    [GuardianPermissionSlipsView].[EmergencyPhone] AS [EmergencyPhone], 
+    [GuardianPermissionSlipsView].[CreatedDateTime] AS [CreatedDateTime], 
+    [GuardianPermissionSlipsView].[GuardianApprovalSignature] AS [GuardianApprovalSignature], 
+    [GuardianPermissionSlipsView].[StudentID] AS [StudentID], 
+    [GuardianPermissionSlipsView].[StudentName] AS [StudentName], 
+    [GuardianPermissionSlipsView].[ClassName] AS [ClassName]
+    FROM [dbo].[GuardianPermissionSlipsView] AS [GuardianPermissionSlipsView]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TeacherPermissionSlipsView" EntityType="Self.TeacherPermissionSlipsView" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [TeacherPermissionSlipsView].[SchoolID] AS [SchoolID], 
+    [TeacherPermissionSlipsView].[SchoolName] AS [SchoolName], 
+    [TeacherPermissionSlipsView].[FirstName] AS [FirstName], 
+    [TeacherPermissionSlipsView].[MiddleName] AS [MiddleName], 
+    [TeacherPermissionSlipsView].[LastName] AS [LastName], 
+    [TeacherPermissionSlipsView].[Email] AS [Email], 
+    [TeacherPermissionSlipsView].[EmailConfirmed] AS [EmailConfirmed], 
+    [TeacherPermissionSlipsView].[PhoneNumber] AS [PhoneNumber], 
+    [TeacherPermissionSlipsView].[RoleName] AS [RoleName], 
+    [TeacherPermissionSlipsView].[ClassID] AS [ClassID], 
+    [TeacherPermissionSlipsView].[RoomNumber] AS [RoomNumber], 
+    [TeacherPermissionSlipsView].[TeacherUserID] AS [TeacherUserID], 
+    [TeacherPermissionSlipsView].[StudentID] AS [StudentID], 
+    [TeacherPermissionSlipsView].[StudentNumber] AS [StudentNumber], 
+    [TeacherPermissionSlipsView].[StudentName] AS [StudentName], 
+    [TeacherPermissionSlipsView].[EventID] AS [EventID], 
+    [TeacherPermissionSlipsView].[EventName] AS [EventName], 
+    [TeacherPermissionSlipsView].[EventLocation] AS [EventLocation], 
+    [TeacherPermissionSlipsView].[StartDateTime] AS [StartDateTime], 
+    [TeacherPermissionSlipsView].[EndDateTime] AS [EndDateTime], 
+    [TeacherPermissionSlipsView].[Cost] AS [Cost], 
+    [TeacherPermissionSlipsView].[RequireChaperone] AS [RequireChaperone], 
+    [TeacherPermissionSlipsView].[RequireChaperoneBackgroundCheck] AS [RequireChaperoneBackgroundCheck], 
+    [TeacherPermissionSlipsView].[Approved] AS [Approved], 
+    [TeacherPermissionSlipsView].[GuardianName] AS [GuardianName], 
+    [TeacherPermissionSlipsView].[CanChaperone] AS [CanChaperone], 
+    [TeacherPermissionSlipsView].[SpecialHealthDietaryAccessConsiderations] AS [SpecialHealthDietaryAccessConsiderations], 
+    [TeacherPermissionSlipsView].[DaytimePhone] AS [DaytimePhone], 
+    [TeacherPermissionSlipsView].[EmergencyPhone] AS [EmergencyPhone], 
+    [TeacherPermissionSlipsView].[CreatedDateTime] AS [CreatedDateTime], 
+    [TeacherPermissionSlipsView].[GuardianApprovalSignature] AS [GuardianApprovalSignature], 
+    [TeacherPermissionSlipsView].[ClassName] AS [ClassName]
+    FROM [dbo].[TeacherPermissionSlipsView] AS [TeacherPermissionSlipsView]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Category_Schools" Association="Self.FK_Category_Schools">
+            <End Role="Schools" EntitySet="Schools" />
+            <End Role="Category" EntitySet="Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClassRoom_Schools" Association="Self.FK_ClassRoom_Schools">
+            <End Role="Schools" EntitySet="Schools" />
+            <End Role="ClassRoom" EntitySet="ClassRoom" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuardianApproval_AspNetUsers" Association="Self.FK_GuardianApproval_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="GuardianApproval" EntitySet="GuardianApproval" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuardianApproval_PermissionSlip" Association="Self.FK_GuardianApproval_PermissionSlip">
+            <End Role="PermissionSlip" EntitySet="PermissionSlip" />
+            <End Role="GuardianApproval" EntitySet="GuardianApproval" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuardianApproval_Student" Association="Self.FK_GuardianApproval_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="GuardianApproval" EntitySet="GuardianApproval" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Guardians_AspNetUsers" Association="Self.FK_Guardians_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Guardians" EntitySet="Guardians" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Guardians_Student" Association="Self.FK_Guardians_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="Guardians" EntitySet="Guardians" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuardianTempEmails_Student" Association="Self.FK_GuardianTempEmails_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="GuardianTempEmails" EntitySet="GuardianTempEmails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PermissionSlip_Category" Association="Self.FK_PermissionSlip_Category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="PermissionSlip" EntitySet="PermissionSlip" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PermissionSlip_ClassRoom" Association="Self.FK_PermissionSlip_ClassRoom">
+            <End Role="ClassRoom" EntitySet="ClassRoom" />
+            <End Role="PermissionSlip" EntitySet="PermissionSlip" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PermissionSlip_Template" Association="Self.FK_PermissionSlip_Template">
+            <End Role="Template" EntitySet="Template" />
+            <End Role="PermissionSlip" EntitySet="PermissionSlip" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_ClassRoom" Association="Self.FK_Student_ClassRoom">
+            <End Role="ClassRoom" EntitySet="ClassRoom" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Schools" Association="Self.FK_Student_Schools">
+            <End Role="Schools" EntitySet="Schools" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Template_Category" Association="Self.FK_Template_Category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="Template" EntitySet="Template" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Template_ClassRoom" Association="Self.FK_Template_ClassRoom">
+            <End Role="ClassRoom" EntitySet="ClassRoom" />
+            <End Role="Template" EntitySet="Template" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Template_Schools" Association="Self.FK_Template_Schools">
+            <End Role="Schools" EntitySet="Schools" />
+            <End Role="Template" EntitySet="Template" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserSchools_AspNetUsers" Association="Self.FK_UserSchools_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="UserSchools" EntitySet="UserSchools" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserSchools_Schools" Association="Self.FK_UserSchools_Schools">
+            <End Role="Schools" EntitySet="Schools" />
+            <End Role="UserSchools" EntitySet="UserSchools" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="OnlinePermissionSlipsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="OnlinePermissionSlipEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categories" EntityType="OnlinePermissionSlipsModel.Category" />
+          <EntitySet Name="ClassRooms" EntityType="OnlinePermissionSlipsModel.ClassRoom" />
+          <EntitySet Name="GuardianApprovals" EntityType="OnlinePermissionSlipsModel.GuardianApproval" />
+          <EntitySet Name="PermissionSlips" EntityType="OnlinePermissionSlipsModel.PermissionSlip" />
+          <EntitySet Name="Schools" EntityType="OnlinePermissionSlipsModel.School" />
+          <EntitySet Name="Students" EntityType="OnlinePermissionSlipsModel.Student" />
+          <EntitySet Name="Templates" EntityType="OnlinePermissionSlipsModel.Template" />
+          <AssociationSet Name="FK_PermissionSlip_ClassRoom" Association="OnlinePermissionSlipsModel.FK_PermissionSlip_ClassRoom">
+            <End Role="ClassRoom" EntitySet="ClassRooms" />
+            <End Role="PermissionSlip" EntitySet="PermissionSlips" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_ClassRoom" Association="OnlinePermissionSlipsModel.FK_Student_ClassRoom">
+            <End Role="ClassRoom" EntitySet="ClassRooms" />
+            <End Role="Student" EntitySet="Students" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuardianApproval_PermissionSlip" Association="OnlinePermissionSlipsModel.FK_GuardianApproval_PermissionSlip">
+            <End Role="PermissionSlip" EntitySet="PermissionSlips" />
+            <End Role="GuardianApproval" EntitySet="GuardianApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuardianApproval_Student" Association="OnlinePermissionSlipsModel.FK_GuardianApproval_Student">
+            <End Role="Student" EntitySet="Students" />
+            <End Role="GuardianApproval" EntitySet="GuardianApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PermissionSlip_Template" Association="OnlinePermissionSlipsModel.FK_PermissionSlip_Template">
+            <End Role="Template" EntitySet="Templates" />
+            <End Role="PermissionSlip" EntitySet="PermissionSlips" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClassRoom_Schools" Association="OnlinePermissionSlipsModel.FK_ClassRoom_Schools">
+            <End Role="School" EntitySet="Schools" />
+            <End Role="ClassRoom" EntitySet="ClassRooms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Schools" Association="OnlinePermissionSlipsModel.FK_Student_Schools">
+            <End Role="School" EntitySet="Schools" />
+            <End Role="Student" EntitySet="Students" />
+          </AssociationSet>
+          <EntitySet Name="AspNetUsers" EntityType="OnlinePermissionSlipsModel.AspNetUser" />
+          <AssociationSet Name="FK_ClassRoom_AspNetUsers" Association="OnlinePermissionSlipsModel.FK_ClassRoom_AspNetUsers">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="ClassRoom" EntitySet="ClassRooms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Template_Category" Association="OnlinePermissionSlipsModel.FK_Template_Category">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Template" EntitySet="Templates" />
+          </AssociationSet>
+          <AssociationSet Name="Guardians" Association="OnlinePermissionSlipsModel.Guardians">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Student" EntitySet="Students" />
+          </AssociationSet>
+          <EntitySet Name="GuardianTempEmails" EntityType="OnlinePermissionSlipsModel.GuardianTempEmail" />
+          <AssociationSet Name="FK_GuardianTempEmails_Student" Association="OnlinePermissionSlipsModel.FK_GuardianTempEmails_Student">
+            <End Role="Student" EntitySet="Students" />
+            <End Role="GuardianTempEmail" EntitySet="GuardianTempEmails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Template_ClassRoom" Association="OnlinePermissionSlipsModel.FK_Template_ClassRoom">
+            <End Role="ClassRoom" EntitySet="ClassRooms" />
+            <End Role="Template" EntitySet="Templates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Template_Schools" Association="OnlinePermissionSlipsModel.FK_Template_Schools">
+            <End Role="School" EntitySet="Schools" />
+            <End Role="Template" EntitySet="Templates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PermissionSlip_Category1" Association="OnlinePermissionSlipsModel.FK_PermissionSlip_Category1">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="PermissionSlip" EntitySet="PermissionSlips" />
+          </AssociationSet>
+          <AssociationSet Name="UserSchools" Association="OnlinePermissionSlipsModel.UserSchools">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="School" EntitySet="Schools" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Category_Schools" Association="OnlinePermissionSlipsModel.FK_Category_Schools">
+            <End Role="School" EntitySet="Schools" />
+            <End Role="Category" EntitySet="Categories" />
+          </AssociationSet>
+          <EntitySet Name="AspNetRoles" EntityType="OnlinePermissionSlipsModel.AspNetRole" />
+          <AssociationSet Name="AspNetUserRoles" Association="OnlinePermissionSlipsModel.AspNetUserRoles">
+            <End Role="AspNetRole" EntitySet="AspNetRoles" />
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GuardianApproval_AspNetUsers" Association="OnlinePermissionSlipsModel.FK_GuardianApproval_AspNetUsers">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="GuardianApproval" EntitySet="GuardianApprovals" />
+          </AssociationSet>
+          <EntitySet Name="GuardianPermissionSlipsViews" EntityType="OnlinePermissionSlipsModel.GuardianPermissionSlipsView" />
+          <EntitySet Name="TeacherPermissionSlipsViews" EntityType="OnlinePermissionSlipsModel.TeacherPermissionSlipsView" />
+          <EntitySet Name="SystemConfigurations" EntityType="OnlinePermissionSlipsModel.SystemConfiguration" />
+        </EntityContainer>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UserDefined" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Templates" Relationship="OnlinePermissionSlipsModel.FK_Template_Category" FromRole="Category" ToRole="Template" />
+          <NavigationProperty Name="PermissionSlips" Relationship="OnlinePermissionSlipsModel.FK_PermissionSlip_Category1" FromRole="Category" ToRole="PermissionSlip" />
+          <Property Name="SchoolID" Type="Int32" />
+          <NavigationProperty Name="School" Relationship="OnlinePermissionSlipsModel.FK_Category_Schools" FromRole="Category" ToRole="School" />
+        </EntityType>
+        <EntityType Name="ClassRoom">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoomNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TeacherUserID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="DisabledDateTime" Type="DateTime" Precision="7" />
+          <Property Name="CreateDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ModifiedDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ConsistencyCheck" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="PermissionSlips" Relationship="OnlinePermissionSlipsModel.FK_PermissionSlip_ClassRoom" FromRole="ClassRoom" ToRole="PermissionSlip" />
+          <NavigationProperty Name="Students" Relationship="OnlinePermissionSlipsModel.FK_Student_ClassRoom" FromRole="ClassRoom" ToRole="Student" />
+          <Property Name="SchoolID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="School" Relationship="OnlinePermissionSlipsModel.FK_ClassRoom_Schools" FromRole="ClassRoom" ToRole="School" />
+          <NavigationProperty Name="AspNetUser" Relationship="OnlinePermissionSlipsModel.FK_ClassRoom_AspNetUsers" FromRole="ClassRoom" ToRole="AspNetUser" />
+          <NavigationProperty Name="Templates" Relationship="OnlinePermissionSlipsModel.FK_Template_ClassRoom" FromRole="ClassRoom" ToRole="Template" />
+        </EntityType>
+        <EntityType Name="GuardianApproval">
+          <Key>
+            <PropertyRef Name="PermissionSlipID" />
+            <PropertyRef Name="StudentID" />
+          </Key>
+          <Property Name="PermissionSlipID" Type="Int32" Nullable="false" />
+          <Property Name="StudentID" Type="Int32" Nullable="false" />
+          <Property Name="GuardianName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="GuardianEmail" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CanChaperone" Type="Boolean" Nullable="false" />
+          <Property Name="SpecialHealthDietaryAccessConsiderations" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DaytimePhone" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="EmergencyPhone" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="Signature" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="CreatedDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="PermissionSlip" Relationship="OnlinePermissionSlipsModel.FK_GuardianApproval_PermissionSlip" FromRole="GuardianApproval" ToRole="PermissionSlip" />
+          <NavigationProperty Name="Student" Relationship="OnlinePermissionSlipsModel.FK_GuardianApproval_Student" FromRole="GuardianApproval" ToRole="Student" />
+          <Property Name="GuardianUserID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="OnlinePermissionSlipsModel.FK_GuardianApproval_AspNetUsers" FromRole="GuardianApproval" ToRole="AspNetUser" />
+          <Property Name="Approved" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PermissionSlip">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PermissionSlipTemplateID" Type="Int32" />
+          <Property Name="ClassRoomID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Location" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="StartDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="EndDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Cost" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="RequireChaperone" Type="Boolean" Nullable="false" />
+          <Property Name="RequireChaperoneBackgroundCheck" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ClassRoom" Relationship="OnlinePermissionSlipsModel.FK_PermissionSlip_ClassRoom" FromRole="PermissionSlip" ToRole="ClassRoom" />
+          <NavigationProperty Name="GuardianApprovals" Relationship="OnlinePermissionSlipsModel.FK_GuardianApproval_PermissionSlip" FromRole="PermissionSlip" ToRole="GuardianApproval" />
+          <NavigationProperty Name="Template" Relationship="OnlinePermissionSlipsModel.FK_PermissionSlip_Template" FromRole="PermissionSlip" ToRole="Template" />
+          <Property Name="PermissionSlipCategoryID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="OnlinePermissionSlipsModel.FK_PermissionSlip_Category1" FromRole="PermissionSlip" ToRole="Category" />
+        </EntityType>
+        <EntityType Name="School">
+          <Key>
+            <PropertyRef Name="SchoolID" />
+          </Key>
+          <Property Name="SchoolID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SchoolName" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ClassRooms" Relationship="OnlinePermissionSlipsModel.FK_ClassRoom_Schools" FromRole="School" ToRole="ClassRoom" />
+          <NavigationProperty Name="Students" Relationship="OnlinePermissionSlipsModel.FK_Student_Schools" FromRole="School" ToRole="Student" />
+          <NavigationProperty Name="Templates" Relationship="OnlinePermissionSlipsModel.FK_Template_Schools" FromRole="School" ToRole="Template" />
+          <NavigationProperty Name="AspNetUsers" Relationship="OnlinePermissionSlipsModel.UserSchools" FromRole="School" ToRole="AspNetUser" />
+          <NavigationProperty Name="Categories" Relationship="OnlinePermissionSlipsModel.FK_Category_Schools" FromRole="School" ToRole="Category" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FullName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ClassRoomID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ClassRoom" Relationship="OnlinePermissionSlipsModel.FK_Student_ClassRoom" FromRole="Student" ToRole="ClassRoom" />
+          <NavigationProperty Name="GuardianApprovals" Relationship="OnlinePermissionSlipsModel.FK_GuardianApproval_Student" FromRole="Student" ToRole="GuardianApproval" />
+          <Property Name="SchoolID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="School" Relationship="OnlinePermissionSlipsModel.FK_Student_Schools" FromRole="Student" ToRole="School" />
+          <NavigationProperty Name="Guardians" Relationship="OnlinePermissionSlipsModel.Guardians" FromRole="Student" ToRole="AspNetUser" />
+          <Property Name="StudentNumber" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="GuardianTempEmails" Relationship="OnlinePermissionSlipsModel.FK_GuardianTempEmails_Student" FromRole="Student" ToRole="GuardianTempEmail" />
+          <Property Name="Guardian1TempEmail" Type="String" MaxLength="512" FixedLength="false" Unicode="true" />
+          <Property Name="Guardian2TempEmail" Type="String" MaxLength="512" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Template">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Location" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Cost" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="RequireChaperone" Type="Boolean" Nullable="false" />
+          <Property Name="RequireChaperoneBackgroundCheck" Type="Boolean" Nullable="false" />
+          <Property Name="DisabledDateTime" Type="DateTime" Precision="7" />
+          <Property Name="CreateDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ModifiedDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ConsistencyCheck" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="PermissionSlips" Relationship="OnlinePermissionSlipsModel.FK_PermissionSlip_Template" FromRole="Template" ToRole="PermissionSlip" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="OnlinePermissionSlipsModel.FK_Template_Category" FromRole="Template" ToRole="Category" />
+          <Property Name="SchoolID" Type="Int32" />
+          <Property Name="ClassRoomID" Type="Int32" />
+          <NavigationProperty Name="ClassRoom" Relationship="OnlinePermissionSlipsModel.FK_Template_ClassRoom" FromRole="Template" ToRole="ClassRoom" />
+          <NavigationProperty Name="School" Relationship="OnlinePermissionSlipsModel.FK_Template_Schools" FromRole="Template" ToRole="School" />
+        </EntityType>
+        <Association Name="FK_PermissionSlip_ClassRoom">
+          <End Type="OnlinePermissionSlipsModel.ClassRoom" Role="ClassRoom" Multiplicity="1" />
+          <End Type="OnlinePermissionSlipsModel.PermissionSlip" Role="PermissionSlip" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClassRoom">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PermissionSlip">
+              <PropertyRef Name="ClassRoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_ClassRoom">
+          <End Type="OnlinePermissionSlipsModel.ClassRoom" Role="ClassRoom" Multiplicity="1" />
+          <End Type="OnlinePermissionSlipsModel.Student" Role="Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClassRoom">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="ClassRoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GuardianApproval_PermissionSlip">
+          <End Type="OnlinePermissionSlipsModel.PermissionSlip" Role="PermissionSlip" Multiplicity="1" />
+          <End Type="OnlinePermissionSlipsModel.GuardianApproval" Role="GuardianApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PermissionSlip">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GuardianApproval">
+              <PropertyRef Name="PermissionSlipID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GuardianApproval_Student">
+          <End Type="OnlinePermissionSlipsModel.Student" Role="Student" Multiplicity="1" />
+          <End Type="OnlinePermissionSlipsModel.GuardianApproval" Role="GuardianApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GuardianApproval">
+              <PropertyRef Name="StudentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PermissionSlip_Template">
+          <End Type="OnlinePermissionSlipsModel.Template" Role="Template" Multiplicity="0..1" />
+          <End Type="OnlinePermissionSlipsModel.PermissionSlip" Role="PermissionSlip" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Template">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PermissionSlip">
+              <PropertyRef Name="PermissionSlipTemplateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClassRoom_Schools">
+          <End Type="OnlinePermissionSlipsModel.School" Role="School" Multiplicity="1" />
+          <End Type="OnlinePermissionSlipsModel.ClassRoom" Role="ClassRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="School">
+              <PropertyRef Name="SchoolID" />
+            </Principal>
+            <Dependent Role="ClassRoom">
+              <PropertyRef Name="SchoolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Schools">
+          <End Type="OnlinePermissionSlipsModel.School" Role="School" Multiplicity="1" />
+          <End Type="OnlinePermissionSlipsModel.Student" Role="Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="School">
+              <PropertyRef Name="SchoolID" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="SchoolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AspNetUser">
+          <Documentation>
+            <Summary>User Authentication and basic account information</Summary>
+            <LongDescription>Table used to ensure all users who can leverage this system has an account and can manage it accordingly so that nobody will have access to data without the appropriate credentials</LongDescription>
+          </Documentation>
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MiddleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ClassRooms" Relationship="OnlinePermissionSlipsModel.FK_ClassRoom_AspNetUsers" FromRole="AspNetUser" ToRole="ClassRoom" />
+          <NavigationProperty Name="Students" Relationship="OnlinePermissionSlipsModel.Guardians" FromRole="AspNetUser" ToRole="Student" />
+          <NavigationProperty Name="Schools" Relationship="OnlinePermissionSlipsModel.UserSchools" FromRole="AspNetUser" ToRole="School" />
+          <NavigationProperty Name="AspNetRoles" Relationship="OnlinePermissionSlipsModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
+          <NavigationProperty Name="GuardianApprovals" Relationship="OnlinePermissionSlipsModel.FK_GuardianApproval_AspNetUsers" FromRole="AspNetUser" ToRole="GuardianApproval" />
+        </EntityType>
+        <Association Name="FK_ClassRoom_AspNetUsers">
+          <End Type="OnlinePermissionSlipsModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="OnlinePermissionSlipsModel.ClassRoom" Role="ClassRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClassRoom">
+              <PropertyRef Name="TeacherUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Template_Category">
+          <End Type="OnlinePermissionSlipsModel.Category" Role="Category" Multiplicity="1" />
+          <End Type="OnlinePermissionSlipsModel.Template" Role="Template" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Template">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Guardians">
+          <End Type="OnlinePermissionSlipsModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
+          <End Type="OnlinePermissionSlipsModel.Student" Role="Student" Multiplicity="*" />
+        </Association>
+        <EntityType Name="GuardianTempEmail">
+          <Key>
+            <PropertyRef Name="GuardianTempEmailID" />
+            <PropertyRef Name="StudentID" />
+            <PropertyRef Name="EmailAddress" />
+          </Key>
+          <Property Name="GuardianTempEmailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StudentID" Type="Int32" Nullable="false" />
+          <Property Name="EmailAddress" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Student" Relationship="OnlinePermissionSlipsModel.FK_GuardianTempEmails_Student" FromRole="GuardianTempEmail" ToRole="Student" />
+        </EntityType>
+        <Association Name="FK_GuardianTempEmails_Student">
+          <End Type="OnlinePermissionSlipsModel.Student" Role="Student" Multiplicity="1" />
+          <End Type="OnlinePermissionSlipsModel.GuardianTempEmail" Role="GuardianTempEmail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GuardianTempEmail">
+              <PropertyRef Name="StudentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Template_ClassRoom">
+          <End Type="OnlinePermissionSlipsModel.ClassRoom" Role="ClassRoom" Multiplicity="0..1" />
+          <End Type="OnlinePermissionSlipsModel.Template" Role="Template" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClassRoom">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Template">
+              <PropertyRef Name="ClassRoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Template_Schools">
+          <End Type="OnlinePermissionSlipsModel.School" Role="School" Multiplicity="0..1" />
+          <End Type="OnlinePermissionSlipsModel.Template" Role="Template" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="School">
+              <PropertyRef Name="SchoolID" />
+            </Principal>
+            <Dependent Role="Template">
+              <PropertyRef Name="SchoolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PermissionSlip_Category1">
+          <End Type="OnlinePermissionSlipsModel.Category" Role="Category" Multiplicity="1" />
+          <End Type="OnlinePermissionSlipsModel.PermissionSlip" Role="PermissionSlip" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PermissionSlip">
+              <PropertyRef Name="PermissionSlipCategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserSchools">
+          <End Type="OnlinePermissionSlipsModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
+          <End Type="OnlinePermissionSlipsModel.School" Role="School" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Category_Schools">
+          <End Type="OnlinePermissionSlipsModel.School" Role="School" Multiplicity="0..1" />
+          <End Type="OnlinePermissionSlipsModel.Category" Role="Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="School">
+              <PropertyRef Name="SchoolID" />
+            </Principal>
+            <Dependent Role="Category">
+              <PropertyRef Name="SchoolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AspNetRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="OnlinePermissionSlipsModel.AspNetUserRoles" FromRole="AspNetRole" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="AspNetUserRoles">
+          <End Type="OnlinePermissionSlipsModel.AspNetRole" Role="AspNetRole" Multiplicity="*" />
+          <End Type="OnlinePermissionSlipsModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_GuardianApproval_AspNetUsers">
+          <End Type="OnlinePermissionSlipsModel.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
+          <End Type="OnlinePermissionSlipsModel.GuardianApproval" Role="GuardianApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GuardianApproval">
+              <PropertyRef Name="GuardianUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="GuardianPermissionSlipsView">
+          <Key>
+            <PropertyRef Name="SchoolID" />
+            <PropertyRef Name="SchoolName" />
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="EmailConfirmed" />
+            <PropertyRef Name="RoleName" />
+            <PropertyRef Name="ClassID" />
+            <PropertyRef Name="RoomNumber" />
+            <PropertyRef Name="TeacherUserID" />
+            <PropertyRef Name="EventID" />
+            <PropertyRef Name="EventName" />
+            <PropertyRef Name="EventLocation" />
+            <PropertyRef Name="StartDateTime" />
+            <PropertyRef Name="EndDateTime" />
+            <PropertyRef Name="Cost" />
+            <PropertyRef Name="RequireChaperone" />
+            <PropertyRef Name="RequireChaperoneBackgroundCheck" />
+            <PropertyRef Name="StudentName" />
+            <PropertyRef Name="StudentID" />
+          </Key>
+          <Property Name="SchoolID" Type="Int32" Nullable="false" />
+          <Property Name="SchoolName" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="UserID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MiddleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="ClassID" Type="Int32" Nullable="false" />
+          <Property Name="RoomNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TeacherUserID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="EventID" Type="Int32" Nullable="false" />
+          <Property Name="EventName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="EventLocation" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="StartDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="EndDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Cost" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="RequireChaperone" Type="Boolean" Nullable="false" />
+          <Property Name="RequireChaperoneBackgroundCheck" Type="Boolean" Nullable="false" />
+          <Property Name="Approved" Type="Boolean" />
+          <Property Name="GuardianName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CanChaperone" Type="Boolean" />
+          <Property Name="SpecialHealthDietaryAccessConsiderations" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DaytimePhone" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="EmergencyPhone" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDateTime" Type="DateTime" Precision="7" />
+          <Property Name="GuardianApprovalSignature" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="StudentName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ClassName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StudentID" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TeacherPermissionSlipsView">
+          <Key>
+            <PropertyRef Name="SchoolID" />
+            <PropertyRef Name="SchoolName" />
+            <PropertyRef Name="EmailConfirmed" />
+            <PropertyRef Name="RoleName" />
+            <PropertyRef Name="ClassID" />
+            <PropertyRef Name="RoomNumber" />
+            <PropertyRef Name="TeacherUserID" />
+            <PropertyRef Name="StudentID" />
+            <PropertyRef Name="StudentNumber" />
+            <PropertyRef Name="StudentName" />
+            <PropertyRef Name="EventID" />
+            <PropertyRef Name="EventName" />
+            <PropertyRef Name="EventLocation" />
+            <PropertyRef Name="StartDateTime" />
+            <PropertyRef Name="EndDateTime" />
+            <PropertyRef Name="Cost" />
+            <PropertyRef Name="RequireChaperone" />
+            <PropertyRef Name="RequireChaperoneBackgroundCheck" />
+          </Key>
+          <Property Name="SchoolID" Type="Int32" Nullable="false" />
+          <Property Name="SchoolName" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MiddleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="ClassID" Type="Int32" Nullable="false" />
+          <Property Name="RoomNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TeacherUserID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="StudentID" Type="Int32" Nullable="false" />
+          <Property Name="StudentNumber" Type="Int32" Nullable="false" />
+          <Property Name="StudentName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="EventID" Type="Int32" Nullable="false" />
+          <Property Name="EventName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="EventLocation" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="StartDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="EndDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Cost" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="RequireChaperone" Type="Boolean" Nullable="false" />
+          <Property Name="RequireChaperoneBackgroundCheck" Type="Boolean" Nullable="false" />
+          <Property Name="Approved" Type="Boolean" />
+          <Property Name="GuardianName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CanChaperone" Type="Boolean" />
+          <Property Name="SpecialHealthDietaryAccessConsiderations" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DaytimePhone" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="EmergencyPhone" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDateTime" Type="DateTime" Precision="7" />
+          <Property Name="GuardianApprovalSignature" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ClassName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SystemConfiguration">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmailDomain" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="EmailAPIKey" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DefaultFromAddress" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="OnlinePermissionSlipsModelStoreContainer" CdmEntityContainer="OnlinePermissionSlipEntities">
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="SchoolID" ColumnName="SchoolID" />
+                <ScalarProperty Name="UserDefined" ColumnName="UserDefined" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClassRooms">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.ClassRoom">
+              <MappingFragment StoreEntitySet="ClassRoom">
+                <ScalarProperty Name="SchoolID" ColumnName="SchoolID" />
+                <ScalarProperty Name="ConsistencyCheck" ColumnName="ConsistencyCheck" />
+                <ScalarProperty Name="ModifiedDateTime" ColumnName="ModifiedDateTime" />
+                <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+                <ScalarProperty Name="DisabledDateTime" ColumnName="DisabledDateTime" />
+                <ScalarProperty Name="TeacherUserID" ColumnName="TeacherUserID" />
+                <ScalarProperty Name="RoomNumber" ColumnName="RoomNumber" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GuardianApprovals">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.GuardianApproval">
+              <MappingFragment StoreEntitySet="GuardianApproval">
+                <ScalarProperty Name="Approved" ColumnName="Approved" />
+                <ScalarProperty Name="GuardianUserID" ColumnName="GuardianUserID" />
+                <ScalarProperty Name="CreatedDateTime" ColumnName="CreatedDateTime" />
+                <ScalarProperty Name="Signature" ColumnName="Signature" />
+                <ScalarProperty Name="EmergencyPhone" ColumnName="EmergencyPhone" />
+                <ScalarProperty Name="DaytimePhone" ColumnName="DaytimePhone" />
+                <ScalarProperty Name="SpecialHealthDietaryAccessConsiderations" ColumnName="SpecialHealthDietaryAccessConsiderations" />
+                <ScalarProperty Name="CanChaperone" ColumnName="CanChaperone" />
+                <ScalarProperty Name="GuardianEmail" ColumnName="GuardianEmail" />
+                <ScalarProperty Name="GuardianName" ColumnName="GuardianName" />
+                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
+                <ScalarProperty Name="PermissionSlipID" ColumnName="PermissionSlipID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PermissionSlips">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.PermissionSlip">
+              <MappingFragment StoreEntitySet="PermissionSlip">
+                <ScalarProperty Name="PermissionSlipCategoryID" ColumnName="PermissionSlipCategoryID" />
+                <ScalarProperty Name="RequireChaperoneBackgroundCheck" ColumnName="RequireChaperoneBackgroundCheck" />
+                <ScalarProperty Name="RequireChaperone" ColumnName="RequireChaperone" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="EndDateTime" ColumnName="EndDateTime" />
+                <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ClassRoomID" ColumnName="ClassRoomID" />
+                <ScalarProperty Name="PermissionSlipTemplateID" ColumnName="PermissionSlipTemplateID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Schools">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.School">
+              <MappingFragment StoreEntitySet="Schools">
+                <ScalarProperty Name="SchoolName" ColumnName="SchoolName" />
+                <ScalarProperty Name="SchoolID" ColumnName="SchoolID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Students">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.Student">
+              <MappingFragment StoreEntitySet="Student">
+                <ScalarProperty Name="Guardian2TempEmail" ColumnName="Guardian2TempEmail" />
+                <ScalarProperty Name="Guardian1TempEmail" ColumnName="Guardian1TempEmail" />
+                <ScalarProperty Name="StudentNumber" ColumnName="StudentNumber" />
+                <ScalarProperty Name="SchoolID" ColumnName="SchoolID" />
+                <ScalarProperty Name="ClassRoomID" ColumnName="ClassRoomID" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Templates">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.Template">
+              <MappingFragment StoreEntitySet="Template">
+                <ScalarProperty Name="ClassRoomID" ColumnName="ClassRoomID" />
+                <ScalarProperty Name="SchoolID" ColumnName="SchoolID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="ConsistencyCheck" ColumnName="ConsistencyCheck" />
+                <ScalarProperty Name="ModifiedDateTime" ColumnName="ModifiedDateTime" />
+                <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />
+                <ScalarProperty Name="DisabledDateTime" ColumnName="DisabledDateTime" />
+                <ScalarProperty Name="RequireChaperoneBackgroundCheck" ColumnName="RequireChaperoneBackgroundCheck" />
+                <ScalarProperty Name="RequireChaperone" ColumnName="RequireChaperone" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.AspNetUser">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Guardians" TypeName="OnlinePermissionSlipsModel.Guardians" StoreEntitySet="Guardians">
+            <EndProperty Name="Student">
+              <ScalarProperty Name="ID" ColumnName="StudentID" />
+            </EndProperty>
+            <EndProperty Name="AspNetUser">
+              <ScalarProperty Name="Id" ColumnName="UserID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="GuardianTempEmails">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.GuardianTempEmail">
+              <MappingFragment StoreEntitySet="GuardianTempEmails">
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
+                <ScalarProperty Name="GuardianTempEmailID" ColumnName="GuardianTempEmailID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="UserSchools" TypeName="OnlinePermissionSlipsModel.UserSchools" StoreEntitySet="UserSchools">
+            <EndProperty Name="School">
+              <ScalarProperty Name="SchoolID" ColumnName="SchoolID" />
+            </EndProperty>
+            <EndProperty Name="AspNetUser">
+              <ScalarProperty Name="Id" ColumnName="UserID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="AspNetRoles">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.AspNetRole">
+              <MappingFragment StoreEntitySet="AspNetRoles">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="AspNetUserRoles" TypeName="OnlinePermissionSlipsModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+            <EndProperty Name="AspNetUser">
+              <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+            <EndProperty Name="AspNetRole">
+              <ScalarProperty Name="Id" ColumnName="RoleId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="GuardianPermissionSlipsViews">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.GuardianPermissionSlipsView">
+              <MappingFragment StoreEntitySet="GuardianPermissionSlipsView">
+                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
+                <ScalarProperty Name="ClassName" ColumnName="ClassName" />
+                <ScalarProperty Name="StudentName" ColumnName="StudentName" />
+                <ScalarProperty Name="GuardianApprovalSignature" ColumnName="GuardianApprovalSignature" />
+                <ScalarProperty Name="CreatedDateTime" ColumnName="CreatedDateTime" />
+                <ScalarProperty Name="EmergencyPhone" ColumnName="EmergencyPhone" />
+                <ScalarProperty Name="DaytimePhone" ColumnName="DaytimePhone" />
+                <ScalarProperty Name="SpecialHealthDietaryAccessConsiderations" ColumnName="SpecialHealthDietaryAccessConsiderations" />
+                <ScalarProperty Name="CanChaperone" ColumnName="CanChaperone" />
+                <ScalarProperty Name="GuardianName" ColumnName="GuardianName" />
+                <ScalarProperty Name="Approved" ColumnName="Approved" />
+                <ScalarProperty Name="RequireChaperoneBackgroundCheck" ColumnName="RequireChaperoneBackgroundCheck" />
+                <ScalarProperty Name="RequireChaperone" ColumnName="RequireChaperone" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="EndDateTime" ColumnName="EndDateTime" />
+                <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
+                <ScalarProperty Name="EventLocation" ColumnName="EventLocation" />
+                <ScalarProperty Name="EventName" ColumnName="EventName" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="TeacherUserID" ColumnName="TeacherUserID" />
+                <ScalarProperty Name="RoomNumber" ColumnName="RoomNumber" />
+                <ScalarProperty Name="ClassID" ColumnName="ClassID" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="SchoolName" ColumnName="SchoolName" />
+                <ScalarProperty Name="SchoolID" ColumnName="SchoolID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TeacherPermissionSlipsViews">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.TeacherPermissionSlipsView">
+              <MappingFragment StoreEntitySet="TeacherPermissionSlipsView">
+                <ScalarProperty Name="ClassName" ColumnName="ClassName" />
+                <ScalarProperty Name="GuardianApprovalSignature" ColumnName="GuardianApprovalSignature" />
+                <ScalarProperty Name="CreatedDateTime" ColumnName="CreatedDateTime" />
+                <ScalarProperty Name="EmergencyPhone" ColumnName="EmergencyPhone" />
+                <ScalarProperty Name="DaytimePhone" ColumnName="DaytimePhone" />
+                <ScalarProperty Name="SpecialHealthDietaryAccessConsiderations" ColumnName="SpecialHealthDietaryAccessConsiderations" />
+                <ScalarProperty Name="CanChaperone" ColumnName="CanChaperone" />
+                <ScalarProperty Name="GuardianName" ColumnName="GuardianName" />
+                <ScalarProperty Name="Approved" ColumnName="Approved" />
+                <ScalarProperty Name="RequireChaperoneBackgroundCheck" ColumnName="RequireChaperoneBackgroundCheck" />
+                <ScalarProperty Name="RequireChaperone" ColumnName="RequireChaperone" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="EndDateTime" ColumnName="EndDateTime" />
+                <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
+                <ScalarProperty Name="EventLocation" ColumnName="EventLocation" />
+                <ScalarProperty Name="EventName" ColumnName="EventName" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="StudentName" ColumnName="StudentName" />
+                <ScalarProperty Name="StudentNumber" ColumnName="StudentNumber" />
+                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
+                <ScalarProperty Name="TeacherUserID" ColumnName="TeacherUserID" />
+                <ScalarProperty Name="RoomNumber" ColumnName="RoomNumber" />
+                <ScalarProperty Name="ClassID" ColumnName="ClassID" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="SchoolName" ColumnName="SchoolName" />
+                <ScalarProperty Name="SchoolID" ColumnName="SchoolID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemConfigurations">
+            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.SystemConfiguration">
+              <MappingFragment StoreEntitySet="SystemConfiguration">
+                <ScalarProperty Name="DefaultFromAddress" ColumnName="DefaultFromAddress" />
+                <ScalarProperty Name="EmailAPIKey" ColumnName="EmailAPIKey" />
+                <ScalarProperty Name="EmailDomain" ColumnName="EmailDomain" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

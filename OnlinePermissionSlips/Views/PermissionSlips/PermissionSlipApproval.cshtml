@@ -1,0 +1,226 @@
+﻿@model OnlinePermissionSlips.Models.DAL.GuardianApproval
+
+@{
+	ViewBag.Title = "Permission Slip Approval";
+
+	var AllowEdit = (Model.StartDateTime > DateTime.Now.Date);
+}
+
+<hr />
+<div class="jumbotron">
+	<h1>@Html.DisplayFor(model => model.Name)</h1>
+	<dl class="dl-horizontal">
+		<dt>@Html.LabelFor(model => model.Location):</dt>
+		<dd>@Html.DisplayFor(model => model.Location)</dd>
+		<dt>@Html.LabelFor(model => model.StartDateTime):</dt>
+		<dd>@Html.DisplayFor(model => model.StartDateTime)</dd>
+		<dt>@Html.LabelFor(model => model.EndDateTime):</dt>
+		<dd>@Html.DisplayFor(model => model.EndDateTime)</dd>
+		<dt>@Html.LabelFor(model => model.Cost):</dt>
+		<dd>$@Html.DisplayFor(model => model.Cost)</dd>
+	</dl>
+</div>
+@*@if (User.IsInRole("Guardian") || !(bool)Model.Approved || !ViewData.ModelState.IsValid)
+	{*@
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+
+	<div class="form-horizontal">
+		@Html.HiddenFor(model => model.PermissionSlipID)
+		@Html.HiddenFor(model => model.StudentID)
+		@Html.HiddenFor(model => model.GuardianUserID)
+		@Html.HiddenFor(model => model.Name)
+		@Html.HiddenFor(model => model.Location)
+		@Html.HiddenFor(model => model.StartDateTime)
+		@Html.HiddenFor(model => model.EndDateTime)
+		@Html.HiddenFor(model => model.Cost)
+		@Html.HiddenFor(model => model.CreatedDateTime)
+		@Html.HiddenFor(model => model.GuardianName)
+		@Html.HiddenFor(model => model.StudentFullName)
+		<div class="form-group">
+			@Html.LabelFor(model => model.GuardianName, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.GuardianName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.StudentFullName, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.StudentFullName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Approved, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				<div class="checkbox">
+					@if (AllowEdit)
+					{
+						@Html.CheckBoxFor(model => model.Approved)
+					}
+					else
+					{
+						@Html.DisplayFor(model => model.Approved)
+					}
+					@Html.ValidationMessageFor(model => model.Approved, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</div>
+
+		@if (Model.RequireChaperone)
+		{
+			<div class="form-group">
+				@Html.LabelFor(model => model.CanChaperone, htmlAttributes: new { @class = "control-label col-md-2" })
+				<div class="col-md-10">
+					@if (AllowEdit)
+					{
+						<div class="checkbox">
+							@Html.CheckBoxFor(model => model.CanChaperone)
+							@Html.ValidationMessageFor(model => model.CanChaperone, "", new { @class = "text-danger" })
+						</div>
+					}
+					else
+					{
+						@Html.DisplayFor(model => model.CanChaperone)
+					}
+					@*@Html.EditorFor(model => model.CanChaperone)*@
+					@if (Model.RequireChaperoneBackgroundCheck && AllowEdit)
+					{<i>Chaperone's Require a Background Check {Click Here for Form}</i>}
+				</div>
+			</div>
+		}
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.DaytimePhone, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@if (AllowEdit)
+				{
+					@Html.EditorFor(model => model.DaytimePhone, new { htmlAttributes = new { @class = "form-control" } })
+				}
+				else
+				{
+					@Html.EditorFor(model => model.DaytimePhone, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+				}
+				@Html.ValidationMessageFor(model => model.DaytimePhone, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.EmergencyPhone, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@if (AllowEdit)
+				{
+					@Html.EditorFor(model => model.EmergencyPhone, new { htmlAttributes = new { @class = "form-control" } })
+				}
+				else
+				{
+					@Html.EditorFor(model => model.EmergencyPhone, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+				}
+				@Html.ValidationMessageFor(model => model.EmergencyPhone, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.SpecialHealthDietaryAccessConsiderations, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@if (AllowEdit)
+				{
+					@Html.TextAreaFor(model => model.SpecialHealthDietaryAccessConsiderations, new { @class = "form-control", @rows = "10" })
+				}
+				else
+				{
+					@Html.TextAreaFor(model => model.SpecialHealthDietaryAccessConsiderations, new { @class = "form-control", @rows = "10", @readonly = "readonly" })
+				}
+				@Html.ValidationMessageFor(model => model.SpecialHealthDietaryAccessConsiderations, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.GuardianEmail, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@if (AllowEdit)
+				{
+					@Html.EditorFor(model => model.GuardianEmail, new { htmlAttributes = new { @class = "form-control" } })
+				}
+				else
+				{
+					@Html.EditorFor(model => model.GuardianEmail, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+				}
+				@Html.ValidationMessageFor(model => model.GuardianEmail, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.SignatureData, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@if (Model.ExistingSignature != null)
+				{
+					var imgSrc = "data:image/png;base64," + Convert.ToBase64String(Model.ExistingSignature);
+					<img src="@imgSrc" width="800" height="200" />
+					@Html.HiddenFor(Model => Model.ExistingSignature)
+					<br />
+				}
+
+				@if (AllowEdit)
+				{
+					<canvas id="signature-pad" class="signature-pad" height=200 style="border-style:inset; border-color:black"></canvas><br />
+					@Html.HiddenFor(Model => Model.SignatureData)
+					@Html.HiddenFor(Model => Model.Signature)
+					<a id="ClearButton" class="btn btn-default btn-warning">Clear Signature</a>
+					@Html.ValidationMessageFor(model => model.SignatureData, "", new { @class = "text-danger" })
+				}
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-2"></div>
+			<div class="col-md-10">
+				@if (AllowEdit)
+				{
+					if (Model.ExistingSignature != null)
+					{
+						<button id="SaveButton" class="btn btn-default btn-success">Update</button>
+					}
+					else
+					{
+						<button id="SaveButton" class="btn btn-default btn-success">Save Approval</button>
+					}
+				}
+				@Html.ActionLink("Cancel", "Index", "Home", null, new { @class = "btn btn-danger" })
+			</div>
+		</div>
+	</div>
+}
+
+@*}
+	else
+	{
+		<dl class="dl-horizontal">
+			<dt>@Html.LabelFor(model => model.GuardianName):</dt>
+			<dd>@Html.DisplayFor(model => model.GuardianName)</dd>
+			<dt>@Html.LabelFor(model => model.StudentFullName):</dt>
+			<dd>@Html.DisplayFor(model => model.StudentFullName)</dd>
+			<dt>@Html.LabelFor(model => model.Approved)</dt>
+			<dd>@Html.DisplayFor(model => model.Approved)</dd>
+			<dt>@Html.LabelFor(model => model.CanChaperone)</dt>
+			<dd>@Html.DisplayFor(model => model.CanChaperone)</dd>
+			<dt>@Html.LabelFor(model => model.DaytimePhone):</dt>
+			<dd>@Html.DisplayFor(model => model.DaytimePhone)</dd>
+			<dt>@Html.LabelFor(model => model.EmergencyPhone):</dt>
+			<dd>@Html.DisplayFor(model => model.EmergencyPhone)</dd>
+			<dt>@Html.LabelFor(model => model.SpecialHealthDietaryAccessConsiderations)</dt>
+			<dd>@Html.DisplayFor(model => model.SpecialHealthDietaryAccessConsiderations)</dd>
+			<dt>@Html.LabelFor(model => model.SignatureData):</dt>
+			<dd>
+				@{ var imgSrc = "data:image/png;base64," + Convert.ToBase64String(Model.ExistingSignature); }
+				<img id="ExistingSignatureImage" src="@imgSrc" width="800" height="200" />
+			</dd>
+		</dl>
+	}*@
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+<script type="text/javascript" src="~/Scripts/ViewModelScripts/SignaturePadSupport.js"></script>
+<script type="text/javascript" src="~/Scripts/ViewModelScripts/PermissionSlipApproval.js"></script>
+
+@*<script type="text/javascript"></script>*@

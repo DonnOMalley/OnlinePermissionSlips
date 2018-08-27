@@ -1,0 +1,80 @@
+﻿@model OnlinePermissionSlips.Models.DAL.ClassRoom
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>ClassRoom</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.RoomNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RoomNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TeacherUserID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TeacherUserID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DisabledDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DisabledDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModifiedDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModifiedDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ConsistencyCheck)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ConsistencyCheck)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.School.SchoolName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.School.SchoolName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

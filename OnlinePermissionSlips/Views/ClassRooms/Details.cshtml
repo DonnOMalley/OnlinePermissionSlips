@@ -1,0 +1,68 @@
+﻿@using Microsoft.AspNet.Identity;
+@using OnlinePermissionSlips.Models.DAL;
+@model OnlinePermissionSlips.Models.DAL.ClassRoom
+
+@{
+	ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+	<h4>ClassRoom</h4>
+	<hr />
+	<dl class="dl-horizontal">
+
+		<dt>
+			School:
+		</dt>
+
+		<dd>
+			@Html.DisplayFor(model => model.School.SchoolName)
+		</dd>
+		<dt>
+			Teacher:
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.AspNetUser.FullName)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.RoomNumber):
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.RoomNumber)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => Model.Students):
+		</dt>
+		<dd>
+			@if (Model.Students.Count > 0)
+			{
+				@Html.Raw("<b>(" + Model.Students.Count.ToString() + ")</b>");
+				<hr />
+				foreach (Student student in Model.Students)
+				{
+				<dt>
+				</dt>
+				<dd>
+					@Html.ActionLink( student.FullName, "Details", "Students", new { id = student.ID }, new { })
+					
+				</dd>
+			}
+		}
+		else
+		{
+			@Html.Raw("<b><i>(None)</i></b>");
+		}
+			</dd>
+
+		</dl>
+</div>
+<p>
+	@if ((Model.AspNetUser.Id == User.Identity.GetUserId()) || User.IsInRole("School Admin") || User.IsInRole("System Admin"))
+	{
+		@Html.ActionLink("Edit", "Edit", new { id = Model.ID });
+		@Html.Raw(" | ");
+	}
+	@Html.ActionLink("Back to List", "Index")
+</p>

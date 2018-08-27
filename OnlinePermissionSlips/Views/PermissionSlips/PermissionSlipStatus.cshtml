@@ -1,0 +1,93 @@
+﻿@using OnlinePermissionSlips.Models.DAL;
+@model PermissionSlipStatus
+
+@{
+	ViewBag.Title = "Permission Slip Status";
+}
+
+<hr />
+<div class="jumbotron">
+	<h1>@Html.DisplayFor(model => model.permissionSlip.Name)</h1>
+	<dl class="dl-horizontal">
+		<dt>@Html.LabelFor(model => model.permissionSlip.Location):</dt>
+		<dd>@Html.DisplayFor(model => model.permissionSlip.Location)</dd>
+		<dt>@Html.LabelFor(model => model.permissionSlip.StartDateTime):</dt>
+		<dd>@Html.DisplayFor(model => model.permissionSlip.StartDateTime)</dd>
+		<dt>@Html.LabelFor(model => model.permissionSlip.EndDateTime):</dt>
+		<dd>@Html.DisplayFor(model => model.permissionSlip.EndDateTime)</dd>
+		<dt>@Html.LabelFor(model => model.permissionSlip.Cost):</dt>
+		<dd>$@Html.DisplayFor(model => model.permissionSlip.Cost)</dd>
+	</dl>
+</div>
+
+@{
+	var NoApprovalList = Model.studentPermissionStatuses.Where(s => s.Approval == null).ToList();
+	var NotApprovedList = Model.studentPermissionStatuses.Where(s => s.Approval == false).ToList();
+	var ApprovedList = Model.studentPermissionStatuses.Where(s => s.Approval == true).ToList();
+}
+
+@if (NoApprovalList.Count > 0)
+{
+	<div class="panel panel-default">
+		<div class="panel-heading panel-collapse" data-toggle="collapse" data-target="#ApprovalNeeded">
+			<h3 class="panel-title">Approval Needed - @NoApprovalList.Count<span class="glyphicon glyphicon-minus pull-right"></span></h3>
+		</div>
+		<div id="ApprovalNeeded" class="panel-body collapse in">
+
+			<table class="table table-condensed">
+				<tbody>
+					@foreach (StudentPermissionSlipStatus s in NoApprovalList)
+					{
+						<tr>
+							<td><a href="@Url.Action("PermissionSlipApproval", "PermissionSlips" , new RouteValueDictionary(new { PermissionSlipID = Model.permissionSlip.ID, StudentID = s.StudentID}), protocol: Request.Url.Scheme)">@s.StudentFullName</a></td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+}
+
+@if (NotApprovedList.Count > 0)
+{
+	<div class="panel panel-default">
+		<div class="panel-heading panel-collapse" data-toggle="collapse" data-target="#NotApproved">
+			<h3 class="panel-title">Not Approved - @NotApprovedList.Count<span class="glyphicon glyphicon-minus pull-right"></span></h3>
+		</div>
+		<div id="NotApproved" class="panel-body collapse in">
+
+			<table class="table table-condensed">
+				<tbody>
+					@foreach (StudentPermissionSlipStatus s in NotApprovedList)
+					{
+						<tr>
+							<td><a href="@Url.Action("PermissionSlipApproval", "PermissionSlips" , new RouteValueDictionary(new { PermissionSlipID = Model.permissionSlip.ID, StudentID = s.StudentID}), protocol: Request.Url.Scheme)">@s.StudentFullName</a></td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+}
+
+@if (ApprovedList.Count > 0)
+{
+	<div class="panel panel-default">
+		<div class="panel-heading panel-collapse" data-toggle="collapse" data-target="#Approved">
+			<h3 class="panel-title">Approved - @ApprovedList.Count<span class="glyphicon glyphicon-minus pull-right"></span></h3>
+		</div>
+		<div id="Approved" class="panel-body collapse in success">
+
+			<table class="table table-condensed">
+				<tbody>
+					@foreach (StudentPermissionSlipStatus s in ApprovedList)
+					{
+						<tr>
+							<td><a href="@Url.Action("PermissionSlipApproval", "PermissionSlips" , new RouteValueDictionary(new { PermissionSlipID = Model.permissionSlip.ID, StudentID = s.StudentID}), protocol: Request.Url.Scheme)">@s.StudentFullName</a></td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+}

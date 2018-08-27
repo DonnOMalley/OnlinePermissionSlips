@@ -1,0 +1,22 @@
+﻿@model OnlinePermissionSlips.Models.DAL.School
+
+@{
+	ViewBag.Title = "Delete";
+}
+<h3>Are you sure you want to delete School: @Html.DisplayFor(model => model.SchoolName)?</h3>
+<div>
+	Deleting the school will also delete all data associated with the school as well.
+</div>
+
+<br />
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+
+	<div class="form-actions no-color">
+		<input type="submit" value="Delete" class="btn btn-default" /> |
+		@Html.ActionLink("Back to List", "Index")
+	</div>
+}
+</div>

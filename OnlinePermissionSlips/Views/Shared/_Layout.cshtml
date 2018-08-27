@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title - My ASP.NET Application</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+
+	@*
+		TODO : Fix Screen Display at the 250px range that screws up the nav
+		Between 750px and 1000px wide the navigation is two lines. This screws up the pages
+		Not sure if I can hide anything
+		Maybe combine some of the menus? Does reports need it's own?
+		Does about/contact need to be separate menu items?
+		Footer??
+	*@
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				@Html.ActionLink("Online Permission Slips", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					@if (User.Identity.IsAuthenticated)
+					{
+						if (!User.IsInRole("Guardian"))
+						{
+							<li class="dropdown">
+								<a class="dropdown-toggle" href="#" id="navbarDropdownConfiguration" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Configuration <span class="glyphicon glyphicon-collapse-down"></span>
+								</a>
+								<ul class="dropdown-menu">
+									@if (User.IsInRole("System Admin"))
+									{
+										<li>@Html.ActionLink("Schools", "Index", "Schools")</li>
+										<li>@Html.ActionLink("Teachers", "Index", "Teachers")</li>
+										<li role="separator" class="divider"></li>
+									}
+									else if (User.IsInRole("School Admin"))
+									{
+										<li>@Html.ActionLink("Teachers", "Index", "Teachers")</li>
+										<li role="separator" class="divider"></li>
+									}
+									<li>@Html.ActionLink("Class Rooms", "Index", "ClassRooms")</li>
+									<li>@Html.ActionLink("Categories", "Index", "Categories")</li>
+									<li>@Html.ActionLink("Templates", "Index", "Templates")</li>
+									<li>@Html.ActionLink("Students", "Index", "Students")</li>
+								</ul>
+							</li>
+							<li class="dropdown">
+								<a class="dropdown-toggle" href="#" id="navbarDropdownPermissionSlips" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Permission Slips <span class="glyphicon glyphicon-collapse-down"></span>
+								</a>
+								<ul class="dropdown-menu">
+									<li>@Html.ActionLink("New", "Create", "PermissionSlips")</li>
+									<li role="separator" class="divider"></li>
+									<li>@Html.ActionLink("Search", "Index", "PermissionSlips")</li>
+								</ul>
+							</li>
+						}
+						<li class="dropdown">
+							<a class="dropdown-toggle" href="#" id="navbarDropdownReports" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Reports <span class="glyphicon glyphicon-collapse-down"></span>
+							</a>
+							<ul class="dropdown-menu">
+								@*
+									<li>@Html.ActionLink("Future Events", "UpcomingEvents", "Reports")</li>
+									<li role="separator" class="divider"></li>
+								*@
+								<li>@Html.ActionLink("Search", "Search", "Reports")</li>
+							</ul>
+						</li>
+					}
+					@if (!User.Identity.IsAuthenticated || !User.IsInRole("System Admin"))
+					{
+						<li>@Html.ActionLink("About", "About", "Home")</li>
+						<li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+					}
+					else
+					{
+						<li>@Html.ActionLink("System Config", "Index", "SystemConfigurations")</li>
+					}
+				</ul>
+				@Html.Partial("_LoginPartial")
+			</div>
+		</div>
+	</div>
+	<div class="container body-content">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year - Trash Panda Solutions LLC</p>
+		</footer>
+	</div>
+
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@Scripts.Render("~/bundles/AppJS")
+	@Scripts.Render("~/MVCGridHandler.axd/script.js");
+	@RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,22 @@
+﻿@model OnlinePermissionSlips.Models.ViewModels.StudentImport
+<tr id="studentRow">
+	@using (Html.BeginCollectionItem("Students"))
+	{
+	<td>
+		@Html.HiddenFor(model => model.ID)
+		@Html.EditorFor(model => model.StudentNumber, new { htmlAttributes = new { @class = "form-control" } })
+	</td>
+		<td>
+			@Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control" } })
+		</td>
+		<td>
+			@Html.EditorFor(model => model.Guardian1TempEmail, new { htmlAttributes = new { @class = "form-control" } })
+		</td>
+		<td>
+			@Html.EditorFor(model => model.Guardian2TempEmail, new { htmlAttributes = new { @class = "form-control" } })
+		</td>
+		<td>
+			<a href="#" id="deleteRow" class="deleteRow btn btn-danger"><span class="deleteRow glyphicon glyphicon-minus"></span> Remove Student</a>
+		</td>
+	}
+</tr>

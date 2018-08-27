@@ -1,0 +1,493 @@
+﻿@model OnlinePermissionSlips.Models.DAL.HomePageViewModel
+@using OnlinePermissionSlips.Models.DAL
+
+@{
+	ViewBag.Title = "Online Permission Slips";
+
+	var Now = DateTime.Now.Date;
+	var NowPlus1Month = Now.AddMonths(1);
+}
+
+<div class="jumbotron">
+	<h1>Online Permission Slips</h1>
+	<p class="lead">Create, manage and track permission slips for your school and students</p>
+</div>
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Teacher") || User.IsInRole("Guardian"))
+{
+<div class="row TPS_Full_Screen_Only">
+	<div class="panel panel-default">
+		<div class="panel-heading panel-collapse" data-toggle="collapse" data-target="#UpcomingEvents">
+			<h3 class="panel-title">Upcoming Events (@Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > Now && p.permissionSlip.StartDateTime < NowPlus1Month).Count().ToString())<span class="glyphicon glyphicon-minus pull-right"></span></h3>
+		</div>
+		<div id="UpcomingEvents" class="panel-body collapse in">
+
+			@if (User.IsInRole("Teacher"))
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+							<th>Approved</th>
+							<th>Not Approved</th>
+							<th>No Approval</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > Now && p.permissionSlip.StartDateTime < NowPlus1Month).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = "warning";
+								if (p.NoApprovalCount == 0 && p.NotApprovedCount == 0) { rowClass = "success"; }
+								else if (p.NoApprovalCount > 0) { rowClass = "danger"; }
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipStatus", "PermissionSlips", new RouteValueDictionary(new { PermissionSlipID = p.permissionSlip.ID }), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.permissionSlip.StartDateTime.Date.ToShortDateString()</td>
+									<td>@p.permissionSlip.EndDateTime.Date.ToShortDateString()</td>
+									<td>@p.ApprovedCount.ToString()</td>
+									<td>@p.NotApprovedCount.ToString()</td>
+									<td>@p.NoApprovalCount.ToString()</td>
+								</tr>
+							}
+						}
+
+					</tbody>
+				</table>
+			}
+			else //Guardian
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Student</th>
+							<th>Approved</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+							<th>Cost</th>
+							<th>Guardian</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > Now && p.permissionSlip.StartDateTime < NowPlus1Month).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = p.GuardianApproved == null ? "warning" : (bool)p.GuardianApproved ? "success" : "danger";
+								var GuardianApprovalText = p.GuardianApproved == null ? "Pending" : p.GuardianApproved.ToString();
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipApproval", "PermissionSlips", new RouteValueDictionary(new { PermissionSlipID = p.permissionSlip.ID, StudentID = p.student.ID }), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.student.FullName</td>
+									<td>@GuardianApprovalText</td> @*Turn into Hyperlink for viewing/editing? approval*@
+									<td>@p.permissionSlip.StartDateTime.Date.ToShortDateString()</td>
+									<td>@p.permissionSlip.EndDateTime.Date.ToShortDateString()</td>
+									<td>@p.permissionSlip.Cost.ToString("C2")</td>
+									<td>@p.guardian.FullName</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading panel-collapse" data-toggle="collapse" data-target="#FutureEvents">
+			<h3 class="panel-title">Future Events (@Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > NowPlus1Month).Count().ToString())<span class="glyphicon glyphicon-plus pull-right"></span></h3>
+		</div>
+		<div id="FutureEvents" class="panel-body collapse">
+
+			@if (User.IsInRole("Teacher"))
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+							<th>Approved</th>
+							<th>Not Approved</th>
+							<th>No Approval</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > NowPlus1Month).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = "warning";
+								if (p.NoApprovalCount == 0 && p.NotApprovedCount == 0) { rowClass = "success"; }
+								else if (p.NoApprovalCount > 0) { rowClass = "danger"; }
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipStatus", "PermissionSlips", new RouteValueDictionary(new { PermissionSlipID = p.permissionSlip.ID }), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.permissionSlip.StartDateTime.Date.ToShortDateString()</td>
+									<td>@p.permissionSlip.EndDateTime.Date.ToShortDateString()</td>
+									<td>@p.ApprovedCount.ToString()</td>
+									<td>@p.NotApprovedCount.ToString()</td>
+									<td>@p.NoApprovalCount.ToString()</td>
+								</tr>
+							}
+						}
+
+					</tbody>
+				</table>
+			}
+			else //Guardian
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Student</th>
+							<th>Approved</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+							<th>Cost</th>
+							<th>Guardian</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > NowPlus1Month).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = p.GuardianApproved == null ? "warning" : (bool)p.GuardianApproved ? "success" : "danger";
+								var GuardianApprovalText = p.GuardianApproved == null ? "Pending" : p.GuardianApproved.ToString();
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipApproval", "PermissionSlips", new RouteValueDictionary(new { PermissionSlipID = p.permissionSlip.ID, StudentID = p.student.ID }), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.student.FullName</td>
+									<td>@GuardianApprovalText</td> @*Turn into Hyperlink for viewing/editing? approval*@
+									<td>@p.permissionSlip.StartDateTime.Date.ToShortDateString()</td>
+									<td>@p.permissionSlip.EndDateTime.Date.ToShortDateString()</td>
+									<td>@p.permissionSlip.Cost.ToString("C2")</td>
+									<td>@p.guardian.FullName</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading panel-collapse" data-toggle="collapse" data-target="#PastEvents">
+			<h3 class="panel-title">Past Events (@Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime < Now).Count().ToString())<span class="glyphicon glyphicon-plus pull-right"></span></h3>
+		</div>
+		<div id="PastEvents" class="panel-body collapse">
+
+			@if (User.IsInRole("Teacher"))
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+							<th>Approved</th>
+							<th>Not Approved</th>
+							<th>No Approval</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime < Now).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = "warning";
+								if (p.NoApprovalCount == 0 && p.NotApprovedCount == 0) { rowClass = "success"; }
+								else if (p.NoApprovalCount > 0) { rowClass = "danger"; }
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipStatus", "PermissionSlips", new RouteValueDictionary(new { PermissionSlipID = p.permissionSlip.ID }), protocol: Request.Url.Scheme)">@p.permissionSlip.Name (@p.TotalCount)</a></td>
+									<td>@p.permissionSlip.StartDateTime.Date.ToShortDateString()</td>
+									<td>@p.permissionSlip.EndDateTime.Date.ToShortDateString()</td>
+									<td>@p.ApprovedCount.ToString()</td>
+									<td>@p.NotApprovedCount.ToString()</td>
+									<td>@p.NoApprovalCount.ToString()</td>
+								</tr>
+							}
+						}
+
+					</tbody>
+				</table>
+			}
+			else //Guardian
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Student</th>
+							<th>Approved</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+							<th>Cost</th>
+							<th>Guardian</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime < Now).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = p.GuardianApproved == null ? "warning" : (bool)p.GuardianApproved ? "success" : "danger";
+								var GuardianApprovalText = p.GuardianApproved == null ? "Pending" : p.GuardianApproved.ToString();
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipApproval", "PermissionSlips", new RouteValueDictionary(new { PermissionSlipID = p.permissionSlip.ID, StudentID = p.student.ID }), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.student.FullName</td>
+									<td>@GuardianApprovalText</td> @*Turn into Hyperlink for viewing/editing? approval*@
+									<td>@p.permissionSlip.StartDateTime.Date.ToShortDateString()</td>
+									<td>@p.permissionSlip.EndDateTime.Date.ToShortDateString()</td>
+									<td>@p.permissionSlip.Cost.ToString("C2")</td>
+									<td>@p.guardian.FullName</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+	</div>
+</div>
+<div class="row TPS_Mobile_Screen_Only">
+	<div class="panel panel-default">
+		<div class="panel-heading panel-collapse" data-toggle="collapse" data-target="#UpcomingEventsMobile">
+			<h3 class="panel-title">Upcoming Events(@Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > Now && p.permissionSlip.StartDateTime < NowPlus1Month).Count().ToString())<span class="glyphicon glyphicon-minus pull-right"></span></h3>
+		</div>
+		<div id="UpcomingEventsMobile" class="panel-body collapse in">
+
+			@if (User.IsInRole("Teacher"))
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Approved</th>
+							<th>Not Approved</th>
+							<th>No Approval</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > Now && p.permissionSlip.StartDateTime < NowPlus1Month).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = "warning";
+								if (p.NoApprovalCount == 0 && p.NotApprovedCount == 0) { rowClass = "success"; }
+								else if (p.NoApprovalCount > 0) { rowClass = "danger"; }
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipStatus", "PermissionSlips" , new RouteValueDictionary(new { PermissionSlipID=p.permissionSlip.ID}), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.ApprovedCount.ToString()</td>
+									<td>@p.NotApprovedCount.ToString()</td>
+									<td>@p.NoApprovalCount.ToString()</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			}
+			else //Guardian
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Student</th>
+							<th>Approved</th>
+							<th>Cost</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > Now && p.permissionSlip.StartDateTime < NowPlus1Month).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = p.GuardianApproved == null ? "warning" : (bool)p.GuardianApproved ? "success" : "danger";
+								var GuardianApprovalText = p.GuardianApproved == null ? "Pending" : p.GuardianApproved.ToString();
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipApproval", "PermissionSlips" , new RouteValueDictionary(new { PermissionSlipID=p.permissionSlip.ID, StudentID=p.student.ID }), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.student.FullName</td>
+									<td>@GuardianApprovalText</td> @*Turn into Hyperlink for viewing/editing? approval*@
+									<td>@p.permissionSlip.Cost.ToString("C2")</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading panel-collapse collapsed" data-toggle="collapse" data-target="#FutureEventsMobile">
+			<h3 class="panel-title">Future Events(@Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > NowPlus1Month).Count().ToString())<span class="glyphicon glyphicon-plus pull-right"></span></h3>
+		</div>
+		<div id="FutureEventsMobile" class="panel-body collapse">
+
+			@if (User.IsInRole("Teacher"))
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Approved</th>
+							<th>Not Approved</th>
+							<th>No Approval</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > NowPlus1Month).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = "warning";
+								if (p.NoApprovalCount == 0 && p.NotApprovedCount == 0) { rowClass = "success"; }
+								else if (p.NoApprovalCount > 0) { rowClass = "danger"; }
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipStatus", "PermissionSlips" , new RouteValueDictionary(new { PermissionSlipID=p.permissionSlip.ID}), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.ApprovedCount.ToString()</td>
+									<td>@p.NotApprovedCount.ToString()</td>
+									<td>@p.NoApprovalCount.ToString()</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			}
+			else //Guardian
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Student</th>
+							<th>Approved</th>
+							<th>Cost</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime > NowPlus1Month).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = p.GuardianApproved == null ? "warning" : (bool)p.GuardianApproved ? "success" : "danger";
+								var GuardianApprovalText = p.GuardianApproved == null ? "Pending" : p.GuardianApproved.ToString();
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipApproval", "PermissionSlips" , new RouteValueDictionary(new { PermissionSlipID=p.permissionSlip.ID, StudentID=p.student.ID }), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.student.FullName</td>
+									<td>@GuardianApprovalText</td> @*Turn into Hyperlink for viewing/editing? approval*@
+									<td>@p.permissionSlip.Cost.ToString("C2")</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading panel-collapse collapsed" data-toggle="collapse" data-target="#PastEventsMobile">
+			<h3 class="panel-title">Past Events(@Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime < Now).Count().ToString())<span class="glyphicon glyphicon-plus pull-right"></span></h3>
+		</div>
+		<div id="PastEventsMobile" class="panel-body collapse">
+
+			@if (User.IsInRole("Teacher"))
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Approved</th>
+							<th>Not Approved</th>
+							<th>No Approval</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime < Now).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = "warning";
+								if (p.NoApprovalCount == 0 && p.NotApprovedCount == 0) { rowClass = "success"; }
+								else if (p.NoApprovalCount > 0) { rowClass = "danger"; }
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipStatus", "PermissionSlips" , new RouteValueDictionary(new { PermissionSlipID=p.permissionSlip.ID}), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.ApprovedCount.ToString()</td>
+									<td>@p.NotApprovedCount.ToString()</td>
+									<td>@p.NoApprovalCount.ToString()</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			}
+			else //Guardian
+			{
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Permission Slip</th>
+							<th>Student</th>
+							<th>Approved</th>
+							<th>Cost</th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+							foreach (IndexPermissionSlip p in Model.PermissionSlips.Where(p => p.permissionSlip.StartDateTime < Now).OrderByDescending(p => p.permissionSlip.StartDateTime).ThenBy(p => p.permissionSlip.EndDateTime).ToList())
+							{
+								var rowClass = p.GuardianApproved == null ? "warning" : (bool)p.GuardianApproved ? "success" : "danger";
+								var GuardianApprovalText = p.GuardianApproved == null ? "Pending" : p.GuardianApproved.ToString();
+
+								<tr class="@rowClass">
+									<td><a href="@Url.Action("PermissionSlipApproval", "PermissionSlips" , new RouteValueDictionary(new { PermissionSlipID=p.permissionSlip.ID, StudentID=p.student.ID }), protocol: Request.Url.Scheme)">@p.permissionSlip.Name</a></td>
+									<td>@p.student.FullName</td>
+									<td>@GuardianApprovalText</td> @*Turn into Hyperlink for viewing/editing? approval*@
+									<td>@p.permissionSlip.Cost.ToString("C2")</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+	</div>
+</div>
+}
+
+<div class="row">
+	@if (!User.Identity.IsAuthenticated)
+	{
+		<div class="col-md-4">
+			<h2> Login to your account</h2>
+			<p><a href="@Url.Action("Login", "Account", null, protocol: Request.Url.Scheme)" class="btn btn-primary btn-lg">Login <span class="glyphicon glyphicon-lock"></span></a></p>
+		</div>
+		<div class="col-md-4">
+			<h2>Who Needs Online Permission Slips </h2>
+			<p>Online Permission Slips is targeted at schools. Teachers and Parents will be the ones benefiting from a much more seamless interaction and improved communication.</p>
+		</div>
+		<div class="col-md-4">
+			<h2>Why?</h2>
+			<p>
+				Teachers no longer have to spend their efforts tracking who is allowed, who needs a reminder and who may or may not have paid.
+				Parents no longer need to rely on a paper form making it home and keeping track of the event. Payments can be made when it is conveinent, in full, partially or as installments.
+			</p>
+		</div>
+	}
+	else
+	{
+		//Based on user type, show various quick links to current permission slip data
+		<div class="col-md-6">
+			<h2>Who Needs Online Permission Slips </h2>
+			<p>Online Permission Slips is targeted at schools. Teachers and Parents will be the ones benefiting from a much more seamless interaction and improved communication.</p>
+		</div>
+		<div class="col-md-6">
+			<h2>Why?</h2>
+			<p>
+				Teachers no longer have to spend their efforts tracking who is allowed, who needs a reminder and who may or may not have paid.
+				Parents no longer need to rely on a paper form making it home and keeping track of the event. Payments can be made when it is conveinent, in full, partially or as installments.
+			</p>
+		</div>
+	}
+</div>

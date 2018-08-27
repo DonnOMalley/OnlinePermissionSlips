@@ -1,0 +1,67 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.TPS_Full_Screen_Only {
+	visibility: visible;
+	display: block;
+	/*position: absolute;*/
+	/*top: inherit;*/
+}
+
+.TPS_Mobile_Screen_Only {
+	visibility: hidden;
+	display: none;
+	/*position: absolute;*/
+	/*top: inherit;*/
+}
+
+.TPS_MVC_GRID_RIGHT {
+	float: right !important;
+	padding-left: 0px;
+}
+
+@media (max-width: 600px) {
+	.TPS_Full_Screen_Only {
+		visibility: hidden;
+		display: none;
+	}
+
+	.TPS_Mobile_Screen_Only {
+		visibility: visible;
+		display: block;
+	}
+}
+
+@media (max-width: 775px) {
+	.TPS_MVC_GRID_RIGHT {
+		padding-left: 10px;
+		float: left !important;
+	}
+}
+
+.checkbox {
+	padding-left: 20px;
+	padding-top: 8px;
+}

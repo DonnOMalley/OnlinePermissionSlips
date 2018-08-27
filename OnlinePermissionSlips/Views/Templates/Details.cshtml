@@ -1,0 +1,90 @@
+﻿@model OnlinePermissionSlips.Models.DAL.Template
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Template</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Cost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cost)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RequireChaperone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RequireChaperone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RequireChaperoneBackgroundCheck)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RequireChaperoneBackgroundCheck)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DisabledDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DisabledDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModifiedDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModifiedDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ConsistencyCheck)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ConsistencyCheck)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

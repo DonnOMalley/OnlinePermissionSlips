@@ -1,0 +1,40 @@
+﻿@model OnlinePermissionSlips.Models.RemoveStudentViewModel
+@{
+	ViewBag.Title = "Confirm Remove Student";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+@using (Html.BeginForm("RemoveStudent", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+	@Html.AntiForgeryToken()
+	<h4>Conform Student Removal</h4>
+	<hr />
+	@Html.ValidationSummary("", new { @class = "text-danger" })
+
+	@Html.HiddenFor(m => m.StudentNumber)
+
+	<div class="form-group">
+		@Html.LabelFor(m => m.StudentNumber, new { @class = "col-md-2 control-label" })
+		<div class="col-md-10">
+			@Html.DisplayFor(m => m.StudentNumber)
+		</div>
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(m => m.FullName, new { @class = "col-md-2 control-label" })
+		<div class="col-md-10">
+			@Html.DisplayFor(m => m.FullName)
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			<input type="submit" class="btn btn-default" value="Remove" />
+		</div>
+	</div>
+}
+
+@Html.ActionLink("Cancel", "Index")
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+}

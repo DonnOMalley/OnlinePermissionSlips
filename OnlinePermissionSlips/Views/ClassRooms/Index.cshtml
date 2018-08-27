@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNet.Identity;
+@model IEnumerable<OnlinePermissionSlips.Models.DAL.ClassRoom>
+
+@{
+	ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+	@Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+	<tr>
+		<th>
+			@Html.DisplayNameFor(model => model.School.SchoolName)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.RoomNumber)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.AspNetUser.FullName)
+		</th>
+		<th></th>
+	</tr>
+
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.School.SchoolName)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.RoomNumber)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.AspNetUser.FullName)
+			</td>
+			<td>
+				@if ((item.AspNetUser.Id == User.Identity.GetUserId()) || User.IsInRole("School Admin") || User.IsInRole("System Admin"))
+				{
+					@Html.ActionLink("Edit", "Edit", new { id = item.ID });
+					@Html.Raw(" | ");
+					@Html.ActionLink("Details", "Details", new { id = item.ID });
+					@Html.Raw(" | ");
+					@Html.ActionLink("Delete", "Delete", new { id = item.ID });
+				}
+				else
+				{
+					@Html.ActionLink("Details", "Details", new { id = item.ID })
+				}
+			</td>
+		</tr>
+	}
+
+</table>

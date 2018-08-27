@@ -1,0 +1,92 @@
+﻿@using OnlinePermissionSlips.Models.DAL;
+@model OnlinePermissionSlips.Models.DAL.ClassRoom
+
+@{
+	ViewBag.Title = "Edit";
+}
+
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+	<hr />
+	<p class="text-success">@ViewBag.StatusMessage</p>
+	@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+	@Html.HiddenFor(model => model.ID)
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.SchoolID, "SchoolID", htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.DropDownList("SchoolID", null, htmlAttributes: new { @class = "form-control", @onchange = "javascript:GetSchoolTeachers(this.value, 'TeacherUserID');" })
+			@Html.ValidationMessageFor(model => model.SchoolID, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.TeacherUserID, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.DropDownList("TeacherUserID", null, "Select Teacher", htmlAttributes: new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.TeacherUserID, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.RoomNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.RoomNumber, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.RoomNumber, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="col-md-12">
+		@Html.Label("Students", htmlAttributes: new { @class = "control-label col-md-2" })
+		<a href="/ClassRooms/ImportStudents/@Model.ID" class="btn btn-primary">Add Students <span class="glyphicon glyphicon-upload"></span></a>
+		@{
+			List<Student> students = Model.Students.Where(s => s.Guardians.Count == 0).ToList();
+			if (students != null && students.Count > 0 && students.Where(s => s.Guardian1TempEmail != null || s.Guardian2TempEmail != null).Count() > 0)
+			{
+				<a href="/ClassRooms/SendRegistrationEmails/@Model.ID" class="btn btn-warning">Send Registration Emails <span class="glyphicon glyphicon-envelope"></span></a>
+			}
+			else if (students != null && students.Count > 0)
+			{ <label class="label-warning">Must Add Temp Emails to send Guardian Registration Links</label>}
+		}
+	</div>
+
+	<div class="form-group">
+		<div class="col-md-2"></div>
+		<div id="studentList" class="col-md-10">
+			<table class="table" id="tblMultileads">
+				<tbody id="CSVRows">
+					@foreach (Student student in Model.Students)
+					{
+						@Html.EditorFor(model => student);
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			<input type="submit" value="Save" class="btn btn-default" />
+		</div>
+	</div>
+</div>
+}
+
+<div>
+	@Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+
+	<script type="text/javascript">
+		$(document).on("click", "#deleteRow", function () {
+			$(this).parents("#studentRow:first").remove();
+			return false;
+		});
+	</script>
+}

@@ -1,0 +1,136 @@
+﻿@model OnlinePermissionSlips.Models.IndexViewModel
+@{
+	ViewBag.Title = "My Profile";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div>
+	<h4>Change your account settings</h4>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt><label class="control-label">Password:</label></dt>
+		<dd>
+			[
+			@if (Model.HasPassword)
+			{
+				@Html.ActionLink("Change your password", "ChangePassword")
+			}
+			else
+			{
+				@Html.ActionLink("Create", "SetPassword")
+			}
+			]
+		</dd>
+		@*<dt><label class="control-label">External Logins:</label></dt>
+		<dd>
+			@Model.Logins.Count [
+			@Html.ActionLink("Manage", "ManageLogins") ]
+		</dd>*@
+		@*
+		Phone Numbers can used as a second factor of verification in a two-factor authentication system.
+
+		 See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+				for details on setting up this ASP.NET application to support two-factor authentication using SMS.
+
+		 Uncomment the following block after you have set up two-factor authentication
+		*@
+		@*
+		<dt>Phone Number:</dt>
+		<dd>
+				@(Model.PhoneNumber ?? "None")
+				@if (Model.PhoneNumber != null)
+				{
+						<br />
+						<text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
+						using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+						{
+								@Html.AntiForgeryToken()
+								<text>[<input type="submit" value="Remove" class="btn-link" />]</text>
+						}
+				}
+				else
+				{
+						<text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
+				}
+		</dd>
+		<dt><label class="control-label">Two-Factor Authentication:</label></dt>
+		<dd>
+				There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+				for details on setting up this ASP.NET application to support two-factor authentication.
+			@if (Model.TwoFactor)
+				{
+						using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+						{
+								@Html.AntiForgeryToken()
+								<text>Enabled
+								<input type="submit" value="Disable" class="btn btn-link" />
+								</text>
+						}
+				}
+				else
+				{
+						using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+						{
+								@Html.AntiForgeryToken()
+								<text>Disabled
+								<input type="submit" value="Enable" class="btn btn-link" />
+								</text>
+						}
+				}
+		</dd>
+		*@
+		<dt><label class="control-label">User Name:</label></dt>
+		<dd>@User.Identity.Name</dd>
+		<dt>@Html.LabelFor(m => m.FirstName, new { @class = "control-label" }):</dt>
+		<dd>@Html.DisplayFor(m => m.FirstName)</dd>
+		<dt>@Html.LabelFor(m => m.MiddleName, new { @class = "control-label" }):</dt>
+		<dd>@Html.DisplayFor(m => m.MiddleName)</dd>
+		<dt>@Html.LabelFor(m => m.LastName, new { @class = "control-label" }):</dt>
+		<dd>@Html.DisplayFor(m => m.LastName)</dd>
+		<dt>@Html.LabelFor(m => m.Email, new { @class = "control-label" }):</dt>
+		<dd>@Html.DisplayFor(m => m.Email)</dd>
+		<dt>@Html.LabelFor(m => m.Roles, new { @class = "control-label" }):</dt>
+		<dd>
+			@foreach (var role in Model.Roles)
+			{
+				@role.Name <br />
+			}
+		</dd>
+		@if (!User.IsInRole("System Admin"))
+		{
+			<dt>@Html.LabelFor(m => m.Schools, new { @class = "control-label" }):</dt>
+			<dd>
+				@foreach (var school in Model.Schools)
+				{
+					@school.SchoolName <br />
+				}
+			</dd>
+		}
+		@if (User.IsInRole("Guardian"))
+		{
+			<dt>@Html.LabelFor(m => m.Students, new { @class = "control-label" }):</dt>
+			<dd>
+
+				[@Html.ActionLink("Add Student", "AddStudent", "Manage")] <br />
+				@foreach (var student in Model.Students)
+				{
+					@Html.Raw(Html.ActionLink(student.FullName + " (" + student.StudentNumber.ToString() + ")", "StudentDetails", "Manage") + " [" + Html.ActionLink("Remove", "RemoveStudent", "Manage", new { id = student.StudentNumber.ToString() }, null) + "] <br />")
+				}
+			</dd>
+		}
+		else if (User.IsInRole("Teacher") || User.IsInRole("School Admin"))
+		{
+			<dt>@Html.LabelFor(m => m.Classes, new { @class = "control-label" }):</dt>
+			<dd>
+
+				[@Html.ActionLink("Add Class", "AddClass", "Manage")] <br />
+				@foreach (var classRoom in Model.Classes)
+				{
+					@classRoom.GetClassName() <br />
+				}
+			</dd>
+		}
+	</dl>
+</div>

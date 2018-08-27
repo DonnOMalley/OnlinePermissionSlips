@@ -1,0 +1,42 @@
+﻿@model OnlinePermissionSlips.Models.DAL.SystemConfiguration
+
+@{
+    ViewBag.Title = "System Configuration Details";
+}
+
+<h2>System Configuration Details</h2>
+
+<div>
+    <hr />
+		<dl class="dl-horizontal">
+			<dt>
+				@Html.DisplayNameFor(model => model.EmailDomain):
+			</dt>
+
+			<dd>
+				@Html.DisplayFor(model => model.EmailDomain)
+			</dd>
+			<hr />
+			<dt>
+				@Html.DisplayNameFor(model => model.EmailAPIKey):
+			</dt>
+
+			<dd>
+				@Html.DisplayFor(model => model.EmailAPIKey)
+			</dd>
+
+			<hr />
+
+			<dt>
+				@Html.DisplayNameFor(model => model.DefaultFromAddress):
+			</dt>
+
+			<dd>
+				@Html.DisplayFor(model => model.DefaultFromAddress)
+			</dd>
+
+		</dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id })
+</p>

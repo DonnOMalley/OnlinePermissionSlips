@@ -1,0 +1,82 @@
+﻿@model OnlinePermissionSlips.Models.ViewModels.ReportingSearchViewModel
+@using OnlinePermissionSlips.Models
+
+@{
+	ViewBag.Title = "Search";
+}
+
+<h2>Search</h2>
+
+<div class="panel panel-default">
+	<div class="panel-heading panel-collapse" data-toggle="collapse" data-target="#SearchPanel">
+		<h3 class="panel-title">Search Criteria<span class="glyphicon glyphicon-minus pull-right"></span></h3>
+	</div>
+	<div id="SearchPanel" class="panel-body collapse in">
+		<div class="form-horizontal">
+
+			<div class="form-group col-md-3">
+				@Html.LabelFor(model => model.SchoolID, htmlAttributes: new { @class = "control-label col-md-offset-1" })
+				<div class="col-md-12">
+					@Html.DropDownList("SchoolID", null, "All Schools", htmlAttributes: new { @class = "form-control" })
+				</div>
+			</div>
+			<div class="form-group col-md-3">
+				@Html.LabelFor(model => model.ClassRoomID, htmlAttributes: new { @class = "control-label col-md-offset-1" })
+				<div class="col-md-12">
+					@Html.DropDownList("ClassRoomID", null, "All Classes", htmlAttributes: new { @class = "form-control" })
+				</div>
+			</div>
+			<div class="form-group col-md-3">
+				@Html.LabelFor(model => model.StudentID, htmlAttributes: new { @class = "control-label col-md-offset-1" })
+				<div class="col-md-12">
+					@Html.DropDownList("StudentID", null, "All Students", htmlAttributes: new { @class = "form-control" })
+				</div>
+			</div>
+
+			<div class="form-group col-md-3">
+				@Html.LabelFor(model => model.PermissionSlipName, htmlAttributes: new { @class = "control-label col-md-offset-1" })
+				<div class="col-md-12">
+					@Html.DropDownList("PermissionSlipName", null, "All PermissionSlips", htmlAttributes: new { @class = "form-control" })
+				</div>
+			</div>
+
+			<div class="form-group col-md-3">
+				@Html.LabelFor(model => model.EventStartDate, htmlAttributes: new { @class = "control-label col-md-offset-1 " })
+				<div class="col-md-12">
+					@Html.EditorFor(model => model.EventStartDate, new { htmlAttributes = new { @class = "form-control" } })
+				</div>
+			</div>
+
+			<div class="form-group col-md-3">
+				@Html.LabelFor(model => model.EventEndDate, htmlAttributes: new { @class = "control-label col-md-offset-1" })
+				<div class="col-md-12">
+					@Html.EditorFor(model => model.EventEndDate, new { htmlAttributes = new { @class = "form-control" } })
+				</div>
+			</div>
+
+			<div class="form-group col-md-12">
+				<div class="col-md-12">
+					<button class="btn btn-primary" id="searchButton">Search</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+	@* MVCGrid.Net Search Resutls *@
+	@Html.Partial("_MVCGridToolbar", new MVCGridToolbarModel()
+	{
+		MVCGridName = "TeacherSearchResults",
+		PageSize = true,
+		ColumnVisibility = true,
+		Export = true,
+		GlobalSearch = true
+	})
+	@Html.Partial("_TeacherPermissionSlipsView")
+
+
+@section Scripts {
+	<script type="text/javascript" src="~/Scripts/ViewModelScripts/TeacherPermissionSlipReport.js"></script>
+}
+
+

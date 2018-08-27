@@ -1,0 +1,62 @@
+﻿@using OnlinePermissionSlips.Models.DAL;
+
+@model OnlinePermissionSlips.Models.DAL.Student
+@using (Html.BeginCollectionItem("Students"))
+{
+	<tr id="studentRow">
+		<td>
+			@Html.HiddenFor(model => model.ID)
+			@Html.HiddenFor(model => model.ClassRoomID)
+			@Html.HiddenFor(model => model.SchoolID)
+
+			<div>
+				@Html.LabelFor(model => model.StudentNumber, htmlAttributes: new { @class = "control-label" })
+				<div>
+					@Html.EditorFor(model => model.StudentNumber, new { htmlAttributes = new { @class = "form-control" } })
+					@Html.ValidationMessageFor(model => model.StudentNumber, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</td>
+		<td>
+			<div>
+				@Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = "control-label" })
+				<div>
+					@Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control" } })
+					@Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</td>
+		@if (Model.Guardians.Count == 0)
+		{
+		<td>
+			<div>
+				@Html.LabelFor(model => model.Guardian1TempEmail, htmlAttributes: new { @class = "control-label" })
+				<div>
+					@Html.EditorFor(model => model.Guardian1TempEmail, new { htmlAttributes = new { @class = "form-control" } })
+					@Html.ValidationMessageFor(model => model.Guardian1TempEmail, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</td>
+		<td>
+			<div>
+				@Html.LabelFor(model => model.Guardian2TempEmail, htmlAttributes: new { @class = "control-label" })
+				<div>
+					@Html.EditorFor(model => model.Guardian2TempEmail, new { htmlAttributes = new { @class = "form-control" } })
+					@Html.ValidationMessageFor(model => model.Guardian2TempEmail, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</td>
+		}
+		else
+		{
+			<td colspan="2">&nbsp;</td>
+		}
+		<td style="vertical-align:bottom">
+			<a href="#" id="deleteRow" class="deleteRow btn btn-danger"><span class="deleteRow glyphicon glyphicon-minus"></span> Remove Student</a>
+		</td>
+	</tr>
+	if(Model.Guardians.Count > 0)
+	{
+		//TODO : Show Guardian Data by Partial Views
+	}
+}
