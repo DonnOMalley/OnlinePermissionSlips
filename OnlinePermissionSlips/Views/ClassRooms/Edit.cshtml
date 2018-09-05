@@ -44,8 +44,8 @@
 		@Html.Label("Students", htmlAttributes: new { @class = "control-label col-md-2" })
 		<a href="/ClassRooms/ImportStudents/@Model.ID" class="btn btn-primary">Add Students <span class="glyphicon glyphicon-upload"></span></a>
 		@{
-			List<Student> students = Model.Students.Where(s => s.Guardians.Count == 0).ToList();
-			if (students != null && students.Count > 0 && students.Where(s => s.Guardian1TempEmail != null || s.Guardian2TempEmail != null).Count() > 0)
+			List<Student> students = Model.Students.Where(s => s.Guardian1TempEmail != null || s.Guardian2TempEmail != null).ToList();
+			if (students != null && students.Count > 0)
 			{
 				<a href="/ClassRooms/SendRegistrationEmails/@Model.ID" class="btn btn-warning">Send Registration Emails <span class="glyphicon glyphicon-envelope"></span></a>
 			}

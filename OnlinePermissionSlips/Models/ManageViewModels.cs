@@ -9,6 +9,7 @@ namespace OnlinePermissionSlips.Models
 {
 	public class IndexViewModel
 	{
+		public bool EmailConfirmed { get; set; }
 		public bool IsSubscribed { get; set; }
 		public bool HasPassword { get; set; }
 		public IList<UserLoginInfo> Logins { get; set; }
@@ -32,6 +33,24 @@ namespace OnlinePermissionSlips.Models
 		public List<Student> Students { get; set; }
 		[Display(Name = "Class Room(s)")]
 		public List<ClassRoom> Classes { get; set; }
+	}
+
+	public class EditViewModel
+	{
+		[Required]
+		[Display(Name = "User Name")]
+		public string UserName { get; set; }
+		[Display(Name = "First Name")]
+		public string FirstName { get; set; }
+		[Display(Name = "Middle Name")]
+		public string MiddleName { get; set; }
+		[Required]
+		[Display(Name = "Last Name")]
+		public string LastName { get; set; }
+		[Required]
+		[EmailAddress]
+		[Display(Name = "Email")]
+		public string Email { get; set; }
 	}
 
 	public class ManageLoginsViewModel

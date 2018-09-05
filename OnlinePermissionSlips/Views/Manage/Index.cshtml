@@ -24,62 +24,62 @@
 			]
 		</dd>
 		@*<dt><label class="control-label">External Logins:</label></dt>
-		<dd>
-			@Model.Logins.Count [
-			@Html.ActionLink("Manage", "ManageLogins") ]
-		</dd>*@
+			<dd>
+				@Model.Logins.Count [
+				@Html.ActionLink("Manage", "ManageLogins") ]
+			</dd>*@
 		@*
-		Phone Numbers can used as a second factor of verification in a two-factor authentication system.
+			Phone Numbers can used as a second factor of verification in a two-factor authentication system.
 
-		 See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-				for details on setting up this ASP.NET application to support two-factor authentication using SMS.
+			 See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+					for details on setting up this ASP.NET application to support two-factor authentication using SMS.
 
-		 Uncomment the following block after you have set up two-factor authentication
+			 Uncomment the following block after you have set up two-factor authentication
 		*@
 		@*
-		<dt>Phone Number:</dt>
-		<dd>
-				@(Model.PhoneNumber ?? "None")
-				@if (Model.PhoneNumber != null)
-				{
-						<br />
-						<text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-						using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-						{
-								@Html.AntiForgeryToken()
-								<text>[<input type="submit" value="Remove" class="btn-link" />]</text>
-						}
-				}
-				else
-				{
-						<text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
-				}
-		</dd>
-		<dt><label class="control-label">Two-Factor Authentication:</label></dt>
-		<dd>
-				There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-				for details on setting up this ASP.NET application to support two-factor authentication.
-			@if (Model.TwoFactor)
-				{
-						using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-						{
-								@Html.AntiForgeryToken()
-								<text>Enabled
-								<input type="submit" value="Disable" class="btn btn-link" />
-								</text>
-						}
-				}
-				else
-				{
-						using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-						{
-								@Html.AntiForgeryToken()
-								<text>Disabled
-								<input type="submit" value="Enable" class="btn btn-link" />
-								</text>
-						}
-				}
-		</dd>
+			<dt>Phone Number:</dt>
+			<dd>
+					@(Model.PhoneNumber ?? "None")
+					@if (Model.PhoneNumber != null)
+					{
+							<br />
+							<text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
+							using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+							{
+									@Html.AntiForgeryToken()
+									<text>[<input type="submit" value="Remove" class="btn-link" />]</text>
+							}
+					}
+					else
+					{
+							<text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
+					}
+			</dd>
+			<dt><label class="control-label">Two-Factor Authentication:</label></dt>
+			<dd>
+					There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+					for details on setting up this ASP.NET application to support two-factor authentication.
+				@if (Model.TwoFactor)
+					{
+							using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+							{
+									@Html.AntiForgeryToken()
+									<text>Enabled
+									<input type="submit" value="Disable" class="btn btn-link" />
+									</text>
+							}
+					}
+					else
+					{
+							using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+							{
+									@Html.AntiForgeryToken()
+									<text>Disabled
+									<input type="submit" value="Enable" class="btn btn-link" />
+									</text>
+							}
+					}
+			</dd>
 		*@
 		<dt><label class="control-label">User Name:</label></dt>
 		<dd>@User.Identity.Name</dd>
@@ -91,13 +91,14 @@
 		<dd>@Html.DisplayFor(m => m.LastName)</dd>
 		<dt>@Html.LabelFor(m => m.Email, new { @class = "control-label" }):</dt>
 		<dd>
-			@Html.DisplayFor(m => m.Email) 
+			@Html.DisplayFor(m => m.Email)
 			@if (!Model.IsSubscribed)
 			{
 				@Html.ActionLink("[Unsubscribed - Click to Resubscribe]", "ResubscribeEmails")
 				<p>Email Addresses that are unsubscribed will not receive email notifications at all from this system.</p>
 			}
-			</dd>
+			@if (!Model.EmailConfirmed) { <p><b>Email Not Yet Confirmed: @Html.ActionLink("Send Confirmation Email", "SendEmailConfirmation")</b></p>}
+		</dd>
 		<dt>@Html.LabelFor(m => m.Roles, new { @class = "control-label" }):</dt>
 		<dd>
 			@foreach (var role in Model.Roles)
@@ -140,4 +141,5 @@
 			</dd>
 		}
 	</dl>
+	<a href="~/Manage/EditProfile" class="btn btn-primary">Edit Profile <span class="glyphicon glyphicon-edit"></span></a>
 </div>

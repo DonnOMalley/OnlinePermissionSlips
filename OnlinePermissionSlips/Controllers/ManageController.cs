@@ -90,6 +90,7 @@ namespace OnlinePermissionSlips.Controllers
 
 			ViewBag.StatusMessage =
 					message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
+					: message == ManageMessageId.EmailConfirmationSent ? "Email Confirmation Sent. Please check your email to confirm change"
 					: message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
 					: message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
 					: message == ManageMessageId.Error ? "An error has occurred."
@@ -141,6 +142,7 @@ namespace OnlinePermissionSlips.Controllers
 
 			model = new IndexViewModel
 			{
+				EmailConfirmed = user.EmailConfirmed,
 				HasPassword = HasPassword(),
 				PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
 				TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
@@ -159,6 +161,119 @@ namespace OnlinePermissionSlips.Controllers
 
 			return View(model);
 		}
+
+		//Get : /Manage/EditProfile
+		[HttpGet]
+		public ActionResult EditProfile()
+		{
+			string userId = "";
+			ApplicationUser user = null;
+			EditViewModel model = null;
+
+			try
+			{
+				userId = User.Identity.GetUserId();
+				user = UserManager.FindById(userId);
+
+				model = new EditViewModel()
+				{
+					UserName = user.UserName,
+					FirstName = user.FirstName,
+					MiddleName = user.MiddleName,
+					LastName = user.LastName,
+					Email = user.Email
+				};
+			}
+			catch (Exception)
+			{
+				model = new EditViewModel();
+				ModelState.AddModelError("", "Unable to load profile for editing");
+			}
+
+			return View(model);
+		}
+
+		public ActionResult SendEmailConfirmation()
+		{
+			string userId = "";
+			ApplicationUser user = null;
+			string EmailCode = "";
+			string callbackUrl = "";
+
+			userId = User.Identity.GetUserId();
+			user = UserManager.FindById(userId);
+
+			if(!user.EmailConfirmed)
+			{
+				EmailCode = UserManager.GenerateEmailConfirmationTokenAsync(user.Id).Result;
+				callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = EmailCode }, protocol: Request.Url.Scheme);
+				UserManager.SendEmail(user.Id, "Confirm your account", "Please confirm your updated email address by clicking <a href=\"" + callbackUrl + "\">here</a>");
+				return RedirectToAction("Index", new { message = ManageMessageId.EmailConfirmationSent });
+			}
+			return RedirectToAction("Index");
+		}
+
+		[HttpPost]
+		public ActionResult EditProfile([Bind(Include = "UserName, FirstName, MiddleName, LastName, Email")] EditViewModel model )
+		{
+			string userId = "";
+			ApplicationUser user = null;
+			AspNetUser aspNetUser = null;
+			bool SendConfirmationEmail = false;
+			string EmailCode = "";
+			string callbackUrl = "";
+			ActionResult result = View(model);
+
+			try
+			{
+				if(ModelState.IsValid)
+				{
+					userId = User.Identity.GetUserId();
+					user = UserManager.FindById(userId);
+					if (user.UserName != model.UserName && EntityDB.AspNetUsers.SingleOrDefault(a => a.Id != user.Id && a.UserName == model.UserName) != null)
+					{
+						ModelState.AddModelError("UserName", "Username is not available");
+					}
+					else if (user.Email != model.Email && EntityDB.AspNetUsers.SingleOrDefault(a => a.Id != user.Id && a.Email == model.Email) != null)
+					{
+						ModelState.AddModelError("Email", "Email is already assigned to an existing user");
+					}
+					else if(user.UserName != model.UserName || 
+									user.Email != model.Email ||
+									user.FirstName != model.FirstName ||
+									user.MiddleName != model.MiddleName ||
+									user.LastName != model.LastName)
+					{
+						SendConfirmationEmail = user.Email != model.Email;
+
+						aspNetUser = EntityDB.AspNetUsers.Find(user.Id);
+						aspNetUser.UserName = model.UserName;
+						aspNetUser.Email = model.Email;
+						aspNetUser.FirstName = model.FirstName;
+						aspNetUser.MiddleName = model.MiddleName;
+						aspNetUser.LastName = model.LastName;
+						aspNetUser.EmailConfirmed = !SendConfirmationEmail;
+
+						int RecordsSaved = EntityDB.SaveChanges();
+
+						UserManager.SetEmail(user.Id, aspNetUser.Email); //Set Email (even though it was just saved - The UserManager won't see it yet)
+						EmailCode = UserManager.GenerateEmailConfirmationTokenAsync(user.Id).Result;
+						callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = EmailCode }, protocol: Request.Url.Scheme);
+						UserManager.SendEmail(user.Id, "Confirm your account", "Please confirm your updated email address by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+						result = RedirectToAction("Index", new { message = ManageMessageId.EmailConfirmationSent });
+					}
+				}
+			}
+			catch (Exception)
+			{
+				model = new EditViewModel();
+				ModelState.AddModelError("", "Unable to edit profile with changes");
+			}
+
+			return result;
+		}
+
 
 		[HttpGet]
 		public ActionResult ResubscribeEmails()
@@ -619,6 +734,7 @@ namespace OnlinePermissionSlips.Controllers
 		{
 			AddPhoneSuccess,
 			ChangePasswordSuccess,
+			EmailConfirmationSent,
 			SetTwoFactorSuccess,
 			SetPasswordSuccess,
 			RemoveLoginSuccess,
