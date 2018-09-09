@@ -58,12 +58,18 @@ namespace OnlinePermissionSlips.Controllers
 		}
 
 		// GET: ClassRooms/Details/5
-		public ActionResult Details(int? id)
+		public ActionResult Details(int? id, ClassRoomMessageId? message)
 		{
 			if (id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
+
+			ViewBag.StatusMessage =
+					message == ClassRoomMessageId.EmailsSent ? "Guardian emails have been sent."
+					: message == ClassRoomMessageId.GuardianEmailSent ? "Guardian emailhas been sent."
+					: message == ClassRoomMessageId.Error ? "An error has occurred."
+					: "";
 			ClassRoom classRoom = db.ClassRooms.Find(id);
 			if (classRoom == null)
 			{
@@ -97,8 +103,6 @@ namespace OnlinePermissionSlips.Controllers
 		}
 
 		// POST: ClassRooms/Create
-		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-		// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Create([Bind(Include = "ID,RoomNumber,TeacherUserID,SchoolID")] ClassRoom classRoom)
@@ -139,6 +143,7 @@ namespace OnlinePermissionSlips.Controllers
 
 			ViewBag.StatusMessage =
 					message == ClassRoomMessageId.EmailsSent ? "Guardian emails have been sent."
+					: message == ClassRoomMessageId.GuardianEmailSent ? "Guardian emailhas been sent."
 					: message == ClassRoomMessageId.Error ? "An error has occurred."
 					: "";
 
@@ -146,13 +151,13 @@ namespace OnlinePermissionSlips.Controllers
 			List<SelectListItem> SchoolList = null;
 
 			if (id == null) { return new HttpStatusCodeResult(HttpStatusCode.BadRequest); }
-			
+
 			classRoom = db.ClassRooms.Find(id);
 
 			if (classRoom == null) { return HttpNotFound(); }
 
 			//Get All Teachers for a specific school (Can I update teacher list as the school choice changes for system Admin?)
-			
+
 			SchoolList = Common.GetSchoolsForDropdown(db, User);
 
 			ViewBag.SchoolID = SchoolList;
@@ -198,7 +203,7 @@ namespace OnlinePermissionSlips.Controllers
 						classRoom.Students.Remove(s);
 						db.Students.Remove(s);
 					}
-					foreach(Student s in remainingStudents)
+					foreach (Student s in remainingStudents)
 					{
 						db.Entry(s).State = EntityState.Modified;
 					}
@@ -302,7 +307,66 @@ namespace OnlinePermissionSlips.Controllers
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Exception Emailing Guardians :: " + ex.ToString());
 			}
 			//TODO :: Add Indication that messages were sent??
-			return RedirectToAction("Edit", "ClassRooms", new { id, message = ClassRoomMessageId.EmailsSent});
+			return RedirectToAction("Edit", "ClassRooms", new { id, message = ClassRoomMessageId.EmailsSent });
+		}
+
+		[HttpGet]
+		public ActionResult SendGuardianRegistrationEmail(int id, int StudentId, string EmailAddress)
+		{
+			Student student = null;
+			ClassRoom classRoom = null;
+			School school = null;
+
+			try
+			{
+				classRoom = db.ClassRooms.Find(id);
+				student = db.Students.Find(StudentId);
+				school = db.Schools.Where(s => s.SchoolID == classRoom.SchoolID).FirstOrDefault();
+				if (school == null) { return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Data Integrity Error. Classroom not assigned to existing school"); }
+
+				EmailMessage email = new EmailMessage()
+				{
+					ToAddress = EmailAddress,
+					EmailSubject = school.SchoolName + " Online Permission Slip Registration"
+				};
+				email.HtmlMessageText = "<a href=\"" + Url.Action("AddStudent", "Manage", new { id = student.ID }, protocol: Request.Url.Scheme) + "\">Click Here to add your student to your profile</a>" +
+																"<br>" +
+																"If you haven't registered, you can <a href=\"" + Url.Action("Register", "Account", null, protocol: Request.Url.Scheme) + "\">Click Here to Register</a> first" +
+																"<p>" +
+																	"Online Permission Slips allows better communication and transparency regarding events for your students' class, " + classRoom.GetClassName() +
+																	"<br />" +
+																	"<br />" +
+																	"<U>You will need to provide the following for verification:</U><br />" +
+																	"<ul>" +
+																	"<li><b>You students ID Number: " + student.StudentNumber.ToString() + "</b></li>" +
+																	"<li><b>Your Student's Full Name: " + student.FullName + "</b></li>" +
+																	"</ul>" +
+																"</p>" +
+																"<p>" +
+																	"Online Permission Slips will always protect your student's information, as well as yours, ensuring privacy and limited access to the information." +
+																	"<br>" +
+																	"Only the school and you will be able to access your student's permission slips and related information." +
+																"</p>";
+				email.MessageText = "Click the following link to add your student to your profile" + Environment.NewLine +
+														"Click to Add: " + Url.Action("AddStudent", "Manage", new { id = student.ID }, protocol: Request.Url.Scheme) + Environment.NewLine + Environment.NewLine +
+														"If you haven't registered, you can Click Here to Register first:" + Url.Action("Register", "Account", null, protocol: Request.Url.Scheme) + Environment.NewLine + Environment.NewLine +
+														"Online Permission Slips allows better communication and transparency regarding events for your students' class, " + classRoom.GetClassName() + Environment.NewLine +
+														Environment.NewLine +
+														"You will need to provide the following for verification:" + Environment.NewLine +
+														"You students ID Number: " + student.StudentNumber.ToString() + Environment.NewLine +
+														"Your Student's Full Name: " + student.FullName + Environment.NewLine +
+														Environment.NewLine +
+														"Online Permission Slips will always protect your student's information, as well as yours, ensuring privacy and limited access to the information." + Environment.NewLine +
+														"Only the school and you will be able to access your student's permission slips and related information.";
+
+				MailGunUtility.SendSimpleMessage(email);
+			}
+			catch (Exception ex)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Exception Emailing Guardians :: " + ex.ToString());
+			}
+			//TODO :: Add Indication that messages were sent??
+			return RedirectToAction("Edit", "Details", new { id, message = ClassRoomMessageId.EmailsSent });
 		}
 
 		[HttpGet]
@@ -494,6 +558,7 @@ namespace OnlinePermissionSlips.Controllers
 		public enum ClassRoomMessageId
 		{
 			EmailsSent,
+			GuardianEmailSent,
 			Error
 		}
 	}

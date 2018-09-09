@@ -26,8 +26,8 @@
 				</div>
 			</div>
 		</td>
-		@if (Model.Guardian1TempEmail != null || Model.Guardian2TempEmail != null)
-		{
+		@*@if (Model.Guardian1TempEmail != null || Model.Guardian2TempEmail != null)
+		{*@
 		<td>
 			<div>
 				@Html.LabelFor(model => model.Guardian1TempEmail, htmlAttributes: new { @class = "control-label" })
@@ -46,11 +46,11 @@
 				</div>
 			</div>
 		</td>
-		}
+		@*}
 		else
 		{
 			<td colspan="2">&nbsp;</td>
-		}
+		}*@
 		<td style="vertical-align:bottom">
 			<a href="#" id="deleteRow" class="deleteRow btn btn-danger"><span class="deleteRow glyphicon glyphicon-minus"></span> Remove Student</a>
 		</td>

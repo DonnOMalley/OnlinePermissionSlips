@@ -6,17 +6,22 @@
 	ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
-
+<h2>Classroom '@Model.RoomNumber' Details</h2>
+<p>
+	@if ((Model.AspNetUser.Id == User.Identity.GetUserId()) || User.IsInRole("School Admin") || User.IsInRole("System Admin"))
+	{
+		@Html.ActionLink("Edit", "Edit", new { id = Model.ID });
+		@Html.Raw(" | ");
+	}
+	@Html.ActionLink("Back to List", "Index")
+</p>
 <div>
-	<h4>ClassRoom</h4>
 	<hr />
 	<dl class="dl-horizontal">
 
 		<dt>
 			School:
 		</dt>
-
 		<dd>
 			@Html.DisplayFor(model => model.School.SchoolName)
 		</dd>
@@ -32,37 +37,90 @@
 		<dd>
 			@Html.DisplayFor(model => model.RoomNumber)
 		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => Model.Students):
-		</dt>
-		<dd>
-			@if (Model.Students.Count > 0)
-			{
-				@Html.Raw("<b>(" + Model.Students.Count.ToString() + ")</b>");
-				<hr />
-				foreach (Student student in Model.Students)
-				{
-				<dt>
-				</dt>
-				<dd>
-					@Html.ActionLink( student.FullName, "Details", "Students", new { id = student.ID }, new { })
-					
-				</dd>
+	</dl>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Students (@Model.Students.Count.ToString())</h3>
+		</div>
+		<div class="panel-body">
+			@{
+				Student StudentTemplate = null;
+				int StudentNum = 0;
 			}
-		}
-		else
-		{
-			@Html.Raw("<b><i>(None)</i></b>");
-		}
-			</dd>
 
-		</dl>
+			<div class="table">
+				<div class="row hidden-sm hidden-xs">
+					<div class="col-md-3">
+						@Html.LabelFor(model => StudentTemplate.FullName)
+					</div>
+					<div class="col-md-3">
+						@Html.LabelFor(model => StudentTemplate.StudentNumber)
+					</div>
+					<div class="col-md-3">
+						<label>Guardian 1</label>
+					</div>
+					<div class="col-md-3">
+						<label>Guardian 2</label>
+					</div>
+				</div>
+				@foreach (Student student in Model.Students)
+				{
+					if (Model.Students.Count > 1 && StudentNum++ > 0)
+					{<hr />}
+
+					<div class="row">
+						<div class="col-md-3 col-xs-12 col-sm-12">
+							@Html.LabelFor(model => StudentTemplate.FullName, new { @class = "hidden-md hidden-lg" })
+							@Html.ActionLink(student.FullName, "Details", "Students", new { id = student.ID }, new { })
+						</div>
+						<div class="col-md-3 col-xs-12 col-sm-12">
+							@Html.LabelFor(model => StudentTemplate.StudentNumber, new { @class = "hidden-md hidden-lg" })
+							@Html.DisplayFor(model => student.StudentNumber)
+						</div>
+						@if (student.Guardians.Count == 2)
+						{
+							foreach (AspNetUser g in student.Guardians)
+							{
+								<div class="col-md-3 col-xs-12 col-sm-12">
+									<label class="hidden-md hidden-lg">Guardian</label>
+									<a href="mailto:@{Html.Raw(g.Email);}" class="btn btn-success">@Html.DisplayFor(model => g.FullName) <span class="glyphicon glyphicon-envelope"></a>
+								</div>
+							}
+						}
+						else if (student.Guardians.Count == 1)
+						{
+							<div class="col-md-3 col-xs-12 col-sm-12">
+								<label class="hidden-md hidden-lg">Guardian</label>
+								<a href="mailto:@{Html.Raw(student.Guardians.First().Email);}" class="btn btn-success">@Html.DisplayFor(model => student.Guardians.First().FullName) <span class="glyphicon glyphicon-envelope"></span></a>
+							</div>
+							<div class="col-md-3 col-xs-12 col-sm-12">
+								<label class="hidden-md hidden-lg">Guardian</label>
+								@Html.Raw(student.Guardian1TempEmail != null ? student.Guardian1TempEmail : student.Guardian2TempEmail)
+
+								@if (student.Guardian1TempEmail != null || student.Guardian2TempEmail != null)
+								{
+									var email = student.Guardian1TempEmail ?? student.Guardian2TempEmail;
+
+									{<a href="@Url.Action("SendGuardianRegistrationEmail", "ClassRooms", new { id = Model.ID, StudentId = student.ID, EmailAddress = email }, Request.Url.Scheme)" class="btn btn-warning">@email <span class="glyphicon glyphicon-envelope"></span></a>}
+							}
+							</div>
+						}
+						else
+						{
+							<div class="col-md-3 col-xs-12 col-sm-12">
+								<label class="hidden-md hidden-lg">Guardian</label>
+								@if (student.Guardian1TempEmail != null)
+								{<a href="@Url.Action("SendGuardianRegistrationEmail", "ClassRooms", new { id = Model.ID, StudentId = student.ID, EmailAddress = student.Guardian1TempEmail }, Request.Url.Scheme)" class="btn btn-warning">@student.Guardian1TempEmail <span class="glyphicon glyphicon-envelope"></span></a>}
+							</div>
+							<div class="col-md-3 col-xs-12 col-sm-12">
+								<label class="hidden-md hidden-lg">Guardian</label>
+								@if (student.Guardian2TempEmail != null)
+								{<a href="@Url.Action("SendGuardianRegistrationEmail", "ClassRooms", new { id = Model.ID, StudentId = student.ID, EmailAddress = student.Guardian2TempEmail }, Request.Url.Scheme)" class="btn btn-warning">@student.Guardian2TempEmail <span class="glyphicon glyphicon-envelope"></span></a>}
+							</div>
+						}
+					</div>
+				}
+			</div>
+		</div>
+	</div>
 </div>
-<p>
-	@if ((Model.AspNetUser.Id == User.Identity.GetUserId()) || User.IsInRole("School Admin") || User.IsInRole("System Admin"))
-	{
-		@Html.ActionLink("Edit", "Edit", new { id = Model.ID });
-		@Html.Raw(" | ");
-	}
-	@Html.ActionLink("Back to List", "Index")
-</p>

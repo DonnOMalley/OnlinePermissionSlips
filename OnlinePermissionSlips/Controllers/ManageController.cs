@@ -203,7 +203,7 @@ namespace OnlinePermissionSlips.Controllers
 			userId = User.Identity.GetUserId();
 			user = UserManager.FindById(userId);
 
-			if(!user.EmailConfirmed)
+			if (!user.EmailConfirmed)
 			{
 				EmailCode = UserManager.GenerateEmailConfirmationTokenAsync(user.Id).Result;
 				callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = EmailCode }, protocol: Request.Url.Scheme);
@@ -214,7 +214,7 @@ namespace OnlinePermissionSlips.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult EditProfile([Bind(Include = "UserName, FirstName, MiddleName, LastName, Email")] EditViewModel model )
+		public ActionResult EditProfile([Bind(Include = "UserName, FirstName, MiddleName, LastName, Email")] EditViewModel model)
 		{
 			string userId = "";
 			ApplicationUser user = null;
@@ -223,10 +223,11 @@ namespace OnlinePermissionSlips.Controllers
 			string EmailCode = "";
 			string callbackUrl = "";
 			ActionResult result = View(model);
+			object ResultRouteValues = null;
 
 			try
 			{
-				if(ModelState.IsValid)
+				if (ModelState.IsValid)
 				{
 					userId = User.Identity.GetUserId();
 					user = UserManager.FindById(userId);
@@ -238,7 +239,7 @@ namespace OnlinePermissionSlips.Controllers
 					{
 						ModelState.AddModelError("Email", "Email is already assigned to an existing user");
 					}
-					else if(user.UserName != model.UserName || 
+					else if (user.UserName != model.UserName ||
 									user.Email != model.Email ||
 									user.FirstName != model.FirstName ||
 									user.MiddleName != model.MiddleName ||
@@ -256,12 +257,16 @@ namespace OnlinePermissionSlips.Controllers
 
 						int RecordsSaved = EntityDB.SaveChanges();
 
-						UserManager.SetEmail(user.Id, aspNetUser.Email); //Set Email (even though it was just saved - The UserManager won't see it yet)
-						EmailCode = UserManager.GenerateEmailConfirmationTokenAsync(user.Id).Result;
-						callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = EmailCode }, protocol: Request.Url.Scheme);
-						UserManager.SendEmail(user.Id, "Confirm your account", "Please confirm your updated email address by clicking <a href=\"" + callbackUrl + "\">here</a>");
+						if(SendConfirmationEmail)
+						{
+							UserManager.SetEmail(user.Id, aspNetUser.Email); //Set Email (even though it was just saved - The UserManager won't see it yet)
+							EmailCode = UserManager.GenerateEmailConfirmationTokenAsync(user.Id).Result;
+							callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = EmailCode }, protocol: Request.Url.Scheme);
+							UserManager.SendEmail(user.Id, "Confirm your account", "Please confirm your updated email address by clicking <a href=\"" + callbackUrl + "\">here</a>");
+							ResultRouteValues = new { message = ManageMessageId.EmailConfirmationSent };
+						}
 
-						result = RedirectToAction("Index", new { message = ManageMessageId.EmailConfirmationSent });
+						result = RedirectToAction("Index", ResultRouteValues);
 					}
 				}
 			}
@@ -301,7 +306,29 @@ namespace OnlinePermissionSlips.Controllers
 		[HttpGet]
 		public ActionResult AddStudent(int? id)
 		{
-			ViewBag.SchoolID = Common.GetSchoolsForDropdown(EntityDB, User);
+			//List<SelectListItem> SchoolList = null;
+			//ViewBag.SchoolID = Common.GetSchoolsForDropdown(EntityDB, User);
+			//try
+			//{
+			//	SchoolList = new List<SelectListItem>();
+			//	foreach (School s in EntityDB.Schools.ToList())
+			//	{
+			//		SelectListItem si = new SelectListItem()
+			//		{
+			//			Text = s.SchoolName,
+			//			Value = s.SchoolID.ToString()
+			//		};
+
+			//		SchoolList.Add(si);
+			//	}
+			//	ViewBag.SchoolID = SchoolList;
+			//}
+			//catch (Exception ex)
+			//{
+			//	throw new Exception("Unable to Create Dropdown List of Schools for " + (User.Identity.IsAuthenticated ? User.Identity.Name : "User [Not Authenticated]"), ex);
+			//}
+
+			ViewBag.SchoolID = EntityDB.Schools.Select(s => new SelectListItem() { Text = s.SchoolName, Value = s.SchoolID.ToString() }).ToList();
 			return View(new AddStudentViewModel() { ID = id });
 		}
 
