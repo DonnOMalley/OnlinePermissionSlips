@@ -217,7 +217,7 @@ namespace OnlinePermissionSlips.Models.DAL
 	public interface IStudent
 	{
 		[Required]
-		[Display(Name = "Student Number(ID)")]
+		[Display(Name = "Student ID")]
 		int StudentNumber { get; set; }
 
 		[Required]

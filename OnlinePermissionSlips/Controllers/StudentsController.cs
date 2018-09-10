@@ -11,6 +11,7 @@ using OnlinePermissionSlips.Models.DAL;
 
 namespace OnlinePermissionSlips.Controllers
 {
+	[Authorize]
 	public class StudentsController : Controller
 	{
 		private OnlinePermissionSlipEntities db = new OnlinePermissionSlipEntities();

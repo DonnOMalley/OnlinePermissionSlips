@@ -158,16 +158,16 @@ namespace OnlinePermissionSlips.Controllers
 
 			//Get All Teachers for a specific school (Can I update teacher list as the school choice changes for system Admin?)
 
-			SchoolList = Common.GetSchoolsForDropdown(db, User);
+			SchoolList = Common.GetSchoolsForDropdown(db, User, classRoom.SchoolID);
 
 			ViewBag.SchoolID = SchoolList;
 			if (User.IsInRole("Teacher"))
 			{
 				ViewBag.TeacherUserID = Common.GetTeachersForDropdown(db, User, User.Identity.GetUserId());
 			}
-			else if (SchoolList.Count == 1) //Will get Picked based on School
+			else if(SchoolList.Count >= 1)
 			{
-				ViewBag.TeacherUserID = Common.GetTeachersForDropdown(db, User, "", int.Parse(SchoolList[0].Value));
+				ViewBag.TeacherUserID = Common.GetTeachersForDropdown(db, User, classRoom.TeacherUserID, classRoom.SchoolID);
 			}
 			else
 			{
@@ -366,7 +366,7 @@ namespace OnlinePermissionSlips.Controllers
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Exception Emailing Guardians :: " + ex.ToString());
 			}
 			//TODO :: Add Indication that messages were sent??
-			return RedirectToAction("Edit", "Details", new { id, message = ClassRoomMessageId.EmailsSent });
+			return RedirectToAction("Details", "ClassRooms", new { id, message = ClassRoomMessageId.EmailsSent });
 		}
 
 		[HttpGet]

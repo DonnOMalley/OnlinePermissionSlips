@@ -1,4 +1,5 @@
-﻿@model OnlinePermissionSlips.Models.IndexViewModel
+﻿@using OnlinePermissionSlips.Models.DAL;
+@model OnlinePermissionSlips.Models.IndexViewModel
 @{
 	ViewBag.Title = "My Profile";
 }
@@ -97,14 +98,8 @@
 				@Html.ActionLink("[Unsubscribed - Click to Resubscribe]", "ResubscribeEmails")
 				<p>Email Addresses that are unsubscribed will not receive email notifications at all from this system.</p>
 			}
-			@if (!Model.EmailConfirmed) { <p><b>Email Not Yet Confirmed: @Html.ActionLink("Send Confirmation Email", "SendEmailConfirmation")</b></p>}
-		</dd>
-		<dt>@Html.LabelFor(m => m.Roles, new { @class = "control-label" }):</dt>
-		<dd>
-			@foreach (var role in Model.Roles)
-			{
-				@role.Name <br />
-			}
+			@if (!Model.EmailConfirmed)
+			{<p><b>Email Not Yet Confirmed: @Html.ActionLink("Send Confirmation Email", "SendEmailConfirmation")</b></p>}
 		</dd>
 		@if (!User.IsInRole("System Admin"))
 		{
@@ -118,14 +113,68 @@
 		}
 		@if (User.IsInRole("Guardian"))
 		{
-			<dt>@Html.LabelFor(m => m.Students, new { @class = "control-label" }):</dt>
+			<dt></dt>
 			<dd>
 
-				[@Html.ActionLink("Add Student", "AddStudent", "Manage")] <br />
-				@foreach (var student in Model.Students)
-				{
-					@Html.Raw(Html.ActionLink(student.FullName + " (" + student.StudentNumber.ToString() + ")", "StudentDetails", "Manage") + " [" + Html.ActionLink("Remove", "RemoveStudent", "Manage", new { id = student.StudentNumber.ToString() }, null) + "] <br />")
-				}
+				<div>
+					<a href="~/Manage/EditProfile" class="btn btn-primary">Edit Profile <span class="glyphicon glyphicon-edit"></span></a>
+				</div>
+				<br />
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a href="@Url.Action("AddStudent", "Manage")" class="pull-right"> Add Student <span class="glyphicon glyphicon-plus-sign"></span></a>
+						 
+						<h3 class="panel-title">Students (@Model.Students.Count.ToString())</h3>
+
+					</div>
+					<div class="panel-body">
+						@{
+							Student StudentTemplate = new Student();
+							StudentTemplate.School = new School();
+							int StudentNum = 0;
+						}
+						<div class="col-md-10">
+							<div class="table">
+								<div class="row hidden-sm hidden-xs">
+									<div class="col-md-3">
+										@Html.LabelFor(model => StudentTemplate.FullName)
+									</div>
+									<div class="col-md-2">
+										@Html.LabelFor(model => StudentTemplate.StudentNumber)
+									</div>
+									<div class="col-md-7">
+										@Html.LabelFor(model => StudentTemplate.School.SchoolName)
+									</div>
+								</div>
+								@foreach (Student student in Model.Students)
+								{
+									if (Model.Students.Count > 1 && StudentNum++ > 0)
+									{<hr />}
+
+									 <div class="row">
+									 	@{ var RemoveLink = Url.Action("RemoveStudent", "Manage", new { id = student.StudentNumber.ToString() });}
+									 <div class="col-md-3 col-xs-12 col-sm-12">
+									 	@Html.LabelFor(model => StudentTemplate.FullName, new { @class = "hidden-md hidden-lg" })
+									 @Html.ActionLink(student.FullName, "Details", "Students", new { id = student.ID }, new { })
+									 </div>
+									 <div class="col-md-2 col-xs-12 col-sm-12">
+									 	@Html.LabelFor(model => StudentTemplate.StudentNumber, new { @class = "hidden-md hidden-lg" })
+									 @Html.DisplayFor(model => student.StudentNumber)
+									 </div>
+									 <div class="col-md-3 col-xs-12 col-sm-12">
+									 @Html.LabelFor(model => student.School.SchoolName, new { @class = "hidden-md hidden-lg" })
+									 @Html.DisplayFor(model => student.School.SchoolName)
+									 </div>
+									 <div class="col-md-2">
+									 	<a href="@RemoveLink" class="btn btn-danger">Remove <span class="glyphicon glyphicon-remove"></span></a>
+									 </div>
+									 </div>
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+
 			</dd>
 		}
 		else if (User.IsInRole("Teacher") || User.IsInRole("School Admin"))
@@ -141,5 +190,4 @@
 			</dd>
 		}
 	</dl>
-	<a href="~/Manage/EditProfile" class="btn btn-primary">Edit Profile <span class="glyphicon glyphicon-edit"></span></a>
 </div>

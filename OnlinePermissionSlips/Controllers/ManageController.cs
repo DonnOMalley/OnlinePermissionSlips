@@ -361,11 +361,11 @@ namespace OnlinePermissionSlips.Controllers
 						AspNetUser user = EntityDB.AspNetUsers.Find(User.Identity.GetUserId());
 						Student userStudent = user.Students.Where(s => s.StudentNumber == model.StudentNumber).FirstOrDefault();
 
-						if ((user != null) && (userStudent == null) && ((student.Guardian1TempEmail == user.Email) || (student.Guardian2TempEmail == user.Email)))
+						if ((user != null) && (userStudent == null) && (((student.Guardian1TempEmail != null) && student.Guardian1TempEmail.Equals(user.Email, StringComparison.CurrentCultureIgnoreCase)) || ((student.Guardian2TempEmail != null) && student.Guardian2TempEmail.Equals(user.Email, StringComparison.CurrentCultureIgnoreCase))))
 						{
 							user.Students.Add(student);
 
-							if (student.Guardian1TempEmail == user.Email)
+							if ((student.Guardian1TempEmail != null) && student.Guardian1TempEmail.Equals(user.Email, StringComparison.CurrentCultureIgnoreCase))
 							{
 								student.Guardian1TempEmail = null;
 							}

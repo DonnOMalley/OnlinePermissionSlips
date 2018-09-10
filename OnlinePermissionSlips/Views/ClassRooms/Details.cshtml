@@ -7,6 +7,7 @@
 }
 
 <h2>Classroom '@Model.RoomNumber' Details</h2>
+<p class="text-success">@ViewBag.StatusMessage</p>
 <p>
 	@if ((Model.AspNetUser.Id == User.Identity.GetUserId()) || User.IsInRole("School Admin") || User.IsInRole("System Admin"))
 	{
@@ -83,7 +84,7 @@
 							{
 								<div class="col-md-3 col-xs-12 col-sm-12">
 									<label class="hidden-md hidden-lg">Guardian</label>
-									<a href="mailto:@{Html.Raw(g.Email);}" class="btn btn-success">@Html.DisplayFor(model => g.FullName) <span class="glyphicon glyphicon-envelope"></a>
+									<a href="mailto:@Html.Raw(g.Email)" class="btn btn-success">@Html.DisplayFor(model => g.FullName) <span class="glyphicon glyphicon-envelope"></a>
 								</div>
 							}
 						}
@@ -91,11 +92,10 @@
 						{
 							<div class="col-md-3 col-xs-12 col-sm-12">
 								<label class="hidden-md hidden-lg">Guardian</label>
-								<a href="mailto:@{Html.Raw(student.Guardians.First().Email);}" class="btn btn-success">@Html.DisplayFor(model => student.Guardians.First().FullName) <span class="glyphicon glyphicon-envelope"></span></a>
+								<a href="mailto:@student.Guardians.First().Email" class="btn btn-success">@Html.DisplayFor(model => student.Guardians.First().FullName) <span class="glyphicon glyphicon-envelope"></span></a>
 							</div>
 							<div class="col-md-3 col-xs-12 col-sm-12">
 								<label class="hidden-md hidden-lg">Guardian</label>
-								@Html.Raw(student.Guardian1TempEmail != null ? student.Guardian1TempEmail : student.Guardian2TempEmail)
 
 								@if (student.Guardian1TempEmail != null || student.Guardian2TempEmail != null)
 								{

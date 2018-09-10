@@ -1,49 +1,78 @@
-﻿@model OnlinePermissionSlips.Models.DAL.Student
+﻿@using OnlinePermissionSlips.Models.DAL;
+@model OnlinePermissionSlips.Models.DAL.Student
 
 @{
-    ViewBag.Title = "Details";
+	ViewBag.Title = "Details";
 }
-
-<h2>Details</h2>
-
 <div>
-    <h4>Student</h4>
-    <hr />
-		<dl class="dl-horizontal">
-			<dt>
-				@Html.DisplayNameFor(model => model.StudentNumber)
-			</dt>
+	<h2>@Html.DisplayFor(model => model.FullName) Details</h2>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.StudentNumber)
+		</dt>
 
-			<dd>
-				@Html.DisplayFor(model => model.StudentNumber)
-			</dd>
-			<dt>
-				@Html.DisplayNameFor(model => model.FullName)
-			</dt>
+		<dd>
+			@Html.DisplayFor(model => model.StudentNumber)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.School.SchoolName)
+		</dt>
 
-			<dd>
-				@Html.DisplayFor(model => model.FullName)
-			</dd>
+		<dd>
+			@Html.DisplayFor(model => model.School.SchoolName)
+		</dd>
 
-			<dt>
-				Class Room
-			</dt>
+		<dt>
+			Class Room
+		</dt>
 
-			<dd>
-				@Model.ClassRoom.AspNetUser.FullName (@Model.ClassRoom.RoomNumber)
-			</dd>
+		<dd>
+			@Model.ClassRoom.AspNetUser.FullName (@Model.ClassRoom.RoomNumber)
+		</dd>
 
-			<dt>
-				@Html.DisplayNameFor(model => model.School.SchoolName)
-			</dt>
+	</dl>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Guardians (@Model.Guardians.Count.ToString())</h3>
+		</div>
+		<div class="panel-body">
+			@{
+				AspNetUser UserTemplate = null;
+				int GuardianNum = 0;
+			}
 
-			<dd>
-				@Html.DisplayFor(model => model.School.SchoolName)
-			</dd>
+			<div class="table">
+				<div class="row hidden-sm hidden-xs">
+					<div class="col-md-6">
+						@Html.LabelFor(model => UserTemplate.FullName)
+					</div>
+					<div class="col-md-6">
+						@Html.LabelFor(model => UserTemplate.Email)
+					</div>
+					<hr />
+				</div>
+				@foreach (AspNetUser guardian in Model.Guardians)
+				{
+					if (Model.Guardians.Count > 1 && GuardianNum++ > 0)
+					{<hr />}
 
-		</dl>
+					<div class="row">
+						<div class="col-md-6 col-xs-12 col-sm-12">
+							@Html.LabelFor(model => UserTemplate.FullName, new { @class = "hidden-md hidden-lg" })
+							@Html.DisplayFor(model => guardian.FullName)
+						</div>
+						<div class="col-md-6 col-xs-12 col-sm-12">
+							@Html.LabelFor(model => UserTemplate.Email, new { @class = "hidden-md hidden-lg" })
+							@Html.DisplayFor(model => guardian.Email)
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
+	@Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+	@Html.ActionLink("Back to List", "Index")
 </p>
