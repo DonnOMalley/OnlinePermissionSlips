@@ -19,7 +19,6 @@ namespace OnlinePermissionSlips.Models.DAL
         {
             this.GuardianApprovals = new HashSet<GuardianApproval>();
             this.Guardians = new HashSet<AspNetUser>();
-            this.GuardianTempEmails = new HashSet<GuardianTempEmail>();
         }
     
         public int ID { get; set; }
@@ -36,7 +35,5 @@ namespace OnlinePermissionSlips.Models.DAL
         public virtual School School { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUser> Guardians { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GuardianTempEmail> GuardianTempEmails { get; set; }
     }
 }

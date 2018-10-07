@@ -431,6 +431,58 @@ namespace OnlinePermissionSlips.Models.DAL
 		string SignatureData { get; set; }
 	}
 
+	public interface IPermissionSlipPrint
+	{
+		string Name { get; set; }
+
+		string Location { get; set; }
+
+		[Display(Name = "Start Date/Time")]
+		DateTime StartDateTime { get; set; }
+
+		[Display(Name = "End Date/Time")]
+		DateTime EndDateTime { get; set; }
+
+		decimal Cost { get; set; }
+
+		bool RequireChaperone { get; set; }
+
+		[Display(Name = "Chaperone Background Check Req'd")]
+		bool RequireChaperoneBackgroundCheck { get; set; }
+
+		[Required]
+		[Display(Name = "Student Name")]
+		string StudentFullName { get; set; }
+
+		[Required]
+		[Display(Name = "Guardian Name")]
+		string GuardianName { get; set; }
+
+		[Required]
+		[Display(Name = "Approve?")]
+		bool Approved { get; set; }
+
+		[Display(Name = "Can Chaperone?")]
+		bool CanChaperone { get; set; }
+
+		[Display(Name = "Any Health/Dietary/Access accommodations?")]
+		string SpecialHealthDietaryAccessConsiderations { get; set; }
+
+		[Required]
+		[Phone]
+		[Display(Name = "Daytime Phone")]
+		string DaytimePhone { get; set; }
+
+		[Required]
+		[Phone]
+		[Display(Name = "Emergency Phone")]
+		string EmergencyPhone { get; set; }
+
+		[Required]
+		[Display(Name = "Signature")]
+		string SignatureData { get; set; }
+	}
+
 	public interface IGuardianPermissionSlipsView
 	{
 		int SchoolID { get; set; }
@@ -630,6 +682,28 @@ namespace OnlinePermissionSlips.Models.DAL
 		public string ExistingSignatureData { get; set; }
 		public byte[] ExistingSignature { get; set; }
 	}
+
+	[MetadataType(typeof(IPermissionSlipPrint))]
+	public class PermissionSlipPrint
+	{
+		public string Name { get; set; }
+		public string Location { get; set; }
+		public DateTime StartDateTime { get; set; }
+		public DateTime EndDateTime { get; set; }
+		public decimal Cost { get; set; }
+		public bool RequireChaperone { get; set; }
+		public bool RequireChaperoneBackgroundCheck { get; set; }
+		public string StudentFullName { get; set; }
+		public string GuardianName { get; set; }
+		public bool Approved { get; set; }
+		public bool CanChaperone { get; set; }
+		public string SpecialHealthDietaryAccessConsiderations { get; set; }
+		public string DaytimePhone { get; set; }
+		public string EmergencyPhone { get; set; }
+		public string SignatureData { get; set; }
+	}
+
+
 
 	[MetadataType(typeof(IGuardianPermissionSlipsView))]
 	public partial class GuardianPermissionSlipsView { }

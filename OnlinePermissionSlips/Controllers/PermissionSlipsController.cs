@@ -55,6 +55,57 @@ namespace OnlinePermissionSlips.Controllers
 			return View(permissionSlip);
 		}
 
+		// GET: PermissionSlips/Print/5
+		public ActionResult Print(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			////////////////////////////////////////////////////////////////////
+
+			PermissionSlip permissionSlip = null;
+			PermissionSlipPrint PermissionSlipPrint = null;
+
+			try
+			{
+				if (User.IsInRole("Guardian")) { throw new Exception("Unable to access print out for permission slip"); }
+				permissionSlip = db.PermissionSlips.Single(p => p.ID == id); //Throws exception if not found
+
+				PermissionSlipPrint = new PermissionSlipPrint()
+				{
+					Name = permissionSlip.Name,
+					Location = permissionSlip.Location,
+					StartDateTime = permissionSlip.StartDateTime,
+					EndDateTime = permissionSlip.EndDateTime,
+					Cost = permissionSlip.Cost,
+					RequireChaperone = permissionSlip.RequireChaperone,
+					RequireChaperoneBackgroundCheck = permissionSlip.RequireChaperoneBackgroundCheck,
+
+					GuardianName = "",
+					Approved = false,
+					CanChaperone = false,
+					DaytimePhone = "",
+					EmergencyPhone = "",
+					SpecialHealthDietaryAccessConsiderations = ""
+				};
+
+			}
+			catch (Exception ex)
+			{
+				//TODO : Do something with Exception Action
+				ModelState.AddModelError("", "Exception occurred processing permission slip print request :: " + ex.ToString());
+				return RedirectToAction("Index", "PermissionSlips");
+			}
+
+			return View(PermissionSlipPrint);
+			///////////////////////////////////////////////////////////////////////
+
+
+
+		}
+
 		private void InitializePermissionSlipForCreate(ref CreatePermissionSlip createPermissionSlip)
 		{
 			List<School> SchoolList = null;
@@ -353,7 +404,7 @@ namespace OnlinePermissionSlips.Controllers
 			}
 			return View(guardianApproval);
 		}
-		
+
 		[HttpGet]
 		public ActionResult PermissionSlipStatus(int PermissionSlipID)
 		{

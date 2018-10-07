@@ -23,8 +23,6 @@
         <AssociationConnector Association="OnlinePermissionSlipsModel.FK_ClassRoom_AspNetUsers" />
         <AssociationConnector Association="OnlinePermissionSlipsModel.FK_Template_Category" />
         <AssociationConnector Association="OnlinePermissionSlipsModel.Guardians" />
-        <EntityTypeShape EntityType="OnlinePermissionSlipsModel.GuardianTempEmail" Width="1.5" PointX="3.25" PointY="14" />
-        <AssociationConnector Association="OnlinePermissionSlipsModel.FK_GuardianTempEmails_Student" />
         <AssociationConnector Association="OnlinePermissionSlipsModel.FK_Template_ClassRoom" />
         <AssociationConnector Association="OnlinePermissionSlipsModel.FK_Template_Schools" />
         <AssociationConnector Association="OnlinePermissionSlipsModel.FK_PermissionSlip_Category1" />

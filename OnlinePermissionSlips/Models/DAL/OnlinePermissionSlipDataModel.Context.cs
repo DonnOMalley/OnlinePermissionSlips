@@ -33,7 +33,6 @@ namespace OnlinePermissionSlips.Models.DAL
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Template> Templates { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
-        public virtual DbSet<GuardianTempEmail> GuardianTempEmails { get; set; }
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<GuardianPermissionSlipsView> GuardianPermissionSlipsViews { get; set; }
         public virtual DbSet<TeacherPermissionSlipsView> TeacherPermissionSlipsViews { get; set; }

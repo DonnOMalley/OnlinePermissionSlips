@@ -171,8 +171,8 @@ namespace OnlinePermissionSlips.Controllers
 
 			foreach(Student s in school.Students)
 			{
-				db.GuardianTempEmails.RemoveRange(s.GuardianTempEmails);
-				s.GuardianTempEmails.Clear();
+				//db.GuardianTempEmails.RemoveRange(s.GuardianTempEmails);
+				//s.GuardianTempEmails.Clear();
 
 				db.GuardianApprovals.RemoveRange(s.GuardianApprovals);
 				s.GuardianApprovals.Clear();

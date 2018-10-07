@@ -23,6 +23,13 @@ textarea {
     max-width: 280px;
 }
 
+input.underlined {
+		border: 0;
+		border-bottom: solid 1px #000;
+		outline: none; /* prevents textbox highlight in chrome */
+		max-width: 100% !important;
+	}
+
 .TPS_Full_Screen_Only {
 	visibility: visible;
 	display: block;
@@ -64,4 +71,11 @@ textarea {
 .checkbox {
 	padding-left: 20px;
 	padding-top: 8px;
+}
+
+@media print {
+	@page {
+		margin-bottom: 0px;
+		margin-top: 0px;
+	}
 }

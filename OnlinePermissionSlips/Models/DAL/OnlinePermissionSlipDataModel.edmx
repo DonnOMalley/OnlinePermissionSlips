@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="OnlinePermissionSlipsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="OnlinePermissionSlipsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AspNetRoles">
           <Key>
             <PropertyRef Name="Id" />
@@ -87,18 +87,6 @@
           </Key>
           <Property Name="UserID" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="StudentID" Type="int" Nullable="false" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'OnlinePermissionSlip.dbo.GuardianTempEmails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="GuardianTempEmails">
-          <Key>
-            <PropertyRef Name="GuardianTempEmailID" />
-            <PropertyRef Name="StudentID" />
-            <PropertyRef Name="EmailAddress" />
-          </Key>
-          <Property Name="GuardianTempEmailID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="StudentID" Type="int" Nullable="false" />
-          <Property Name="EmailAddress" Type="nvarchar" MaxLength="1024" Nullable="false" />
         </EntityType>
         <EntityType Name="PermissionSlip">
           <Key>
@@ -394,18 +382,6 @@ warning 6002: The table/view 'OnlinePermissionSlip.dbo.TeacherPermissionSlipsVie
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_GuardianTempEmails_Student">
-          <End Role="Student" Type="Self.Student" Multiplicity="1" />
-          <End Role="GuardianTempEmails" Type="Self.GuardianTempEmails" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Student">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="GuardianTempEmails">
-              <PropertyRef Name="StudentID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PermissionSlip_Category">
           <End Role="Category" Type="Self.Category" Multiplicity="1" />
           <End Role="PermissionSlip" Type="Self.PermissionSlip" Multiplicity="*" />
@@ -540,13 +516,6 @@ warning 6002: The table/view 'OnlinePermissionSlip.dbo.TeacherPermissionSlipsVie
           <EntitySet Name="SystemConfiguration" EntityType="Self.SystemConfiguration" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Template" EntityType="Self.Template" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSchools" EntityType="Self.UserSchools" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="GuardianTempEmails" EntityType="Self.GuardianTempEmails" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [GuardianTempEmails].[GuardianTempEmailID] AS [GuardianTempEmailID], 
-    [GuardianTempEmails].[StudentID] AS [StudentID], 
-    [GuardianTempEmails].[EmailAddress] AS [EmailAddress]
-    FROM [dbo].[GuardianTempEmails] AS [GuardianTempEmails]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="GuardianPermissionSlipsView" EntityType="Self.GuardianPermissionSlipsView" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [GuardianPermissionSlipsView].[SchoolID] AS [SchoolID], 
@@ -655,10 +624,6 @@ warning 6002: The table/view 'OnlinePermissionSlip.dbo.TeacherPermissionSlipsVie
             <End Role="Student" EntitySet="Student" />
             <End Role="Guardians" EntitySet="Guardians" />
           </AssociationSet>
-          <AssociationSet Name="FK_GuardianTempEmails_Student" Association="Self.FK_GuardianTempEmails_Student">
-            <End Role="Student" EntitySet="Student" />
-            <End Role="GuardianTempEmails" EntitySet="GuardianTempEmails" />
-          </AssociationSet>
           <AssociationSet Name="FK_PermissionSlip_Category" Association="Self.FK_PermissionSlip_Category">
             <End Role="Category" EntitySet="Category" />
             <End Role="PermissionSlip" EntitySet="PermissionSlip" />
@@ -752,11 +717,6 @@ warning 6002: The table/view 'OnlinePermissionSlip.dbo.TeacherPermissionSlipsVie
           <AssociationSet Name="Guardians" Association="OnlinePermissionSlipsModel.Guardians">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="Student" EntitySet="Students" />
-          </AssociationSet>
-          <EntitySet Name="GuardianTempEmails" EntityType="OnlinePermissionSlipsModel.GuardianTempEmail" />
-          <AssociationSet Name="FK_GuardianTempEmails_Student" Association="OnlinePermissionSlipsModel.FK_GuardianTempEmails_Student">
-            <End Role="Student" EntitySet="Students" />
-            <End Role="GuardianTempEmail" EntitySet="GuardianTempEmails" />
           </AssociationSet>
           <AssociationSet Name="FK_Template_ClassRoom" Association="OnlinePermissionSlipsModel.FK_Template_ClassRoom">
             <End Role="ClassRoom" EntitySet="ClassRooms" />
@@ -887,7 +847,6 @@ warning 6002: The table/view 'OnlinePermissionSlip.dbo.TeacherPermissionSlipsVie
           <NavigationProperty Name="School" Relationship="OnlinePermissionSlipsModel.FK_Student_Schools" FromRole="Student" ToRole="School" />
           <NavigationProperty Name="Guardians" Relationship="OnlinePermissionSlipsModel.Guardians" FromRole="Student" ToRole="AspNetUser" />
           <Property Name="StudentNumber" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="GuardianTempEmails" Relationship="OnlinePermissionSlipsModel.FK_GuardianTempEmails_Student" FromRole="Student" ToRole="GuardianTempEmail" />
           <Property Name="Guardian1TempEmail" Type="String" MaxLength="512" FixedLength="false" Unicode="true" />
           <Property Name="Guardian2TempEmail" Type="String" MaxLength="512" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -1053,29 +1012,6 @@ warning 6002: The table/view 'OnlinePermissionSlip.dbo.TeacherPermissionSlipsVie
         <Association Name="Guardians">
           <End Type="OnlinePermissionSlipsModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
           <End Type="OnlinePermissionSlipsModel.Student" Role="Student" Multiplicity="*" />
-        </Association>
-        <EntityType Name="GuardianTempEmail">
-          <Key>
-            <PropertyRef Name="GuardianTempEmailID" />
-            <PropertyRef Name="StudentID" />
-            <PropertyRef Name="EmailAddress" />
-          </Key>
-          <Property Name="GuardianTempEmailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StudentID" Type="Int32" Nullable="false" />
-          <Property Name="EmailAddress" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Student" Relationship="OnlinePermissionSlipsModel.FK_GuardianTempEmails_Student" FromRole="GuardianTempEmail" ToRole="Student" />
-        </EntityType>
-        <Association Name="FK_GuardianTempEmails_Student">
-          <End Type="OnlinePermissionSlipsModel.Student" Role="Student" Multiplicity="1" />
-          <End Type="OnlinePermissionSlipsModel.GuardianTempEmail" Role="GuardianTempEmail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Student">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="GuardianTempEmail">
-              <PropertyRef Name="StudentID" />
-            </Dependent>
-          </ReferentialConstraint>
         </Association>
         <Association Name="FK_Template_ClassRoom">
           <End Type="OnlinePermissionSlipsModel.ClassRoom" Role="ClassRoom" Multiplicity="0..1" />
@@ -1404,15 +1340,6 @@ warning 6002: The table/view 'OnlinePermissionSlip.dbo.TeacherPermissionSlipsVie
               <ScalarProperty Name="Id" ColumnName="UserID" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="GuardianTempEmails">
-            <EntityTypeMapping TypeName="OnlinePermissionSlipsModel.GuardianTempEmail">
-              <MappingFragment StoreEntitySet="GuardianTempEmails">
-                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
-                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
-                <ScalarProperty Name="GuardianTempEmailID" ColumnName="GuardianTempEmailID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <AssociationSetMapping Name="UserSchools" TypeName="OnlinePermissionSlipsModel.UserSchools" StoreEntitySet="UserSchools">
             <EndProperty Name="School">
               <ScalarProperty Name="SchoolID" ColumnName="SchoolID" />

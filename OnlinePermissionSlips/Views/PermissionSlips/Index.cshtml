@@ -1,16 +1,16 @@
 ﻿@model IEnumerable<OnlinePermissionSlips.Models.DAL.PermissionSlip>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Permission Slips";
 }
 
 <br />
 <p>
 	<a href="@Url.Action("Create", "PermissionSlips", null, protocol: Request.Url.Scheme)" class="btn btn-primary">Create New Permission Slip <span class="glyphicon glyphicon-plus-sign" /></a>
-    @*@Html.ActionLink("Create New Permission Slip", "Create")*@
-</p>
+    </p>
 <table class="table">
     <tr>
+			<th></th>
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
@@ -18,10 +18,7 @@
             @Html.DisplayNameFor(model => model.Location)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StartDateTime)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EndDateTime)
+            <label>Date/Time</label>
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Cost)
@@ -37,6 +34,9 @@
 
 @foreach (var item in Model) {
     <tr>
+			<td>
+				<a href="@Url.Action("Print", "PermissionSlips", new { id = item.ID })" id="PrintBtn" class="btn btn-primary" target="_blank"><span class="glyphicon glyphicon-print"></span></a>
+			</td>
         <td>
             @Html.DisplayFor(modelItem => item.Name)
         </td>
@@ -44,13 +44,10 @@
             @Html.DisplayFor(modelItem => item.Location)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.StartDateTime)
+            @Html.DisplayFor(modelItem => item.StartDateTime) -  @Html.DisplayFor(modelItem => item.EndDateTime)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.EndDateTime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Cost)
+            $@Html.DisplayFor(modelItem => item.Cost)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.RequireChaperone)
@@ -58,11 +55,11 @@
         <td>
             @Html.DisplayFor(modelItem => item.RequireChaperoneBackgroundCheck)
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
+				<td>
+					@Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+					@Html.ActionLink("Details", "Details", new { id = item.ID }) |
+					@Html.ActionLink("Delete", "Delete", new { id = item.ID })
+				</td>
     </tr>
 }
 
