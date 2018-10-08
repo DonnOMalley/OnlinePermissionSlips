@@ -32,7 +32,7 @@ namespace OnlinePermissionSlips.Controllers
 			try
 			{
 				UserID = User.Identity.GetUserId();
-				//Schools = Common.GetSchoolsForDropdown(db, User);
+
 				SchoolList = Common.GetSchools(db, User);
 				Schools.AddRange(SchoolList.Select(s => new SelectListItem() { Text = s.SchoolName, Value = s.SchoolID.ToString() }));
 				ViewBag.SchoolID = Schools;
@@ -100,8 +100,6 @@ namespace OnlinePermissionSlips.Controllers
 		}
 
 		// POST: Teachers/Create
-		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-		// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Create([Bind(Include = "SchoolID,UserName,Password,ConfirmPassword,FirstName,MiddleName,LastName,Email,Email,PhoneNumber")] CreateTeacher createTeacher)
@@ -237,17 +235,37 @@ namespace OnlinePermissionSlips.Controllers
 		}
 
 		// POST: Teachers/Edit/5
-		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-		// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Edit([Bind(Include = "Id,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,FirstName,MiddleName,LastName")] AspNetUser aspNetUser)
+		public ActionResult Edit([Bind(Include = "Id,Email,PhoneNumber,UserName,FirstName,MiddleName,LastName")] AspNetUser aspNetUser)
 		{
+			AspNetUser user = null;
+			AspNetUser originalUser = null;
 			if (ModelState.IsValid)
 			{
-				db.Entry(aspNetUser).State = EntityState.Modified;
-				db.SaveChanges();
-				return RedirectToAction("Index");
+				user = db.AspNetUsers.Where(u => u.Id != aspNetUser.Id && u.UserName == aspNetUser.UserName).FirstOrDefault();
+				if(user != null)
+				{
+					ModelState.AddModelError("UserName", "UserName is not available");
+				}
+				else
+				{
+					originalUser = db.AspNetUsers.Find(aspNetUser.Id);
+					if(originalUser.Email != aspNetUser.Email)
+					{
+						aspNetUser.EmailConfirmed = false; //reset email confirmation and then send email.
+					}
+					db.Entry(aspNetUser).State = EntityState.Modified;
+					db.SaveChanges();
+
+					ApplicationUserManager mgr = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+					string code = mgr.GenerateEmailConfirmationToken(user.Id);
+					var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+					mgr.SendEmail(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+					return RedirectToAction("Index");
+				}
 			}
 			return View(aspNetUser);
 		}

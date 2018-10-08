@@ -584,6 +584,11 @@ namespace OnlinePermissionSlips.Models.DAL
 			}
 			return ClassName;
 		}
+
+		public override string ToString()
+		{
+			return GetClassName();
+		}
 	}
 
 	[MetadataType(typeof(IStudent))]

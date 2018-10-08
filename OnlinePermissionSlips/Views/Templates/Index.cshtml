@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<OnlinePermissionSlips.Models.DAL.Template>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Templates";
 }
 
-<h2>Index</h2>
+<h2>Templates</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -44,7 +44,7 @@
 			@Html.DisplayFor(modelItem => item.School.SchoolName)
 		</td>
 		<td>
-			@Html.Raw(item.ClassRoom.GetClassName())
+			@Html.Raw(item.ClassRoom?.GetClassName())
 		</td>
 		<td>
 			@Html.Raw(item.Category.Name)

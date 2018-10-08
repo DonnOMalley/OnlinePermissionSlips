@@ -8,6 +8,8 @@
 <hr />
 <div class="jumbotron">
 	<h1>@Html.DisplayFor(model => model.permissionSlip.Name)</h1>
+
+	<a href="@Url.Action("Print", "PermissionSlips", new { id = Model.permissionSlip.ID })" id="PrintBtn" class="btn btn-primary pull-right" target="_blank">Print Permission Slip <span class="glyphicon glyphicon-print"></span></a>
 	<dl class="dl-horizontal">
 		<dt>@Html.LabelFor(model => model.permissionSlip.Location):</dt>
 		<dd>@Html.DisplayFor(model => model.permissionSlip.Location)</dd>

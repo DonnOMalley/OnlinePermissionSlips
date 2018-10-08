@@ -121,6 +121,46 @@ namespace OnlinePermissionSlips.Controllers
 						}
 					}
 				}
+				else if (User.IsInRole("School Admin"))
+				{
+					classRooms = Common.GetClassRooms(db, User);
+					DateTime StartDate = DateTime.Now.Date;
+					DateTime EndDate = DateTime.Now.Date;
+
+					if (DateTime.Now.Month >= 8)
+					{
+						StartDate = new DateTime(DateTime.Now.Year, 8, 1);
+						EndDate = new DateTime(DateTime.Now.Year + 1, 6, 30);
+					}
+					else
+					{
+						StartDate = new DateTime(DateTime.Now.Year - 1, 8, 1);
+						EndDate = new DateTime(DateTime.Now.Year, 6, 30);
+					}
+
+					foreach (ClassRoom c in classRooms)
+					{
+
+						ClassPermissionSlips = c.PermissionSlips.Where(p => (p.StartDateTime >= StartDate && p.StartDateTime <= EndDate) ||
+																																(p.EndDateTime >= EndDate && p.EndDateTime >= StartDate)
+																													).ToList();
+
+						foreach (PermissionSlip p in ClassPermissionSlips)
+						{
+							ApprovedCount = db.GuardianApprovals.Where(a => a.PermissionSlipID == p.ID && a.Approved == true).Count();
+							NotApprovedCount = db.GuardianApprovals.Where(a => a.PermissionSlipID == p.ID && a.Approved == false).Count();
+							NoApprovalCount = p.ClassRoom.Students.Count - ApprovedCount - NotApprovedCount;
+
+							vm.PermissionSlips.Add(new IndexPermissionSlip()
+							{
+								permissionSlip = p,
+								ApprovedCount = ApprovedCount,
+								NotApprovedCount = NotApprovedCount,
+								NoApprovalCount = NoApprovalCount
+							});
+						}
+					}
+				}
 			}
 
 			vm.PermissionSlips = vm.PermissionSlips.OrderByDescending(p => p.permissionSlip.StartDateTime.Date).ThenBy(p => p.GuardianApproved).ToList();

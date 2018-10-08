@@ -407,51 +407,86 @@ namespace OnlinePermissionSlips.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult ImportStudents([Bind(Include = "ID,SchoolID,SchoolName,TeacherName,RoomNumber,Students")]ClassRoomImport classRoom)
 		{
+			ActionResult result = View(classRoom);
+			DbContextTransaction xactn = null;
 
-			if (ModelState.IsValid)
+			try
 			{
-				foreach (StudentImport s in classRoom.Students)
-				{
-					db.Students.Add(new Student()
-					{
-						SchoolID = classRoom.SchoolID,
-						ClassRoomID = classRoom.ID,
-						FullName = s.FullName,
-						StudentNumber = s.StudentNumber,
-						Guardian1TempEmail = s.Guardian1TempEmail,
-						Guardian2TempEmail = s.Guardian2TempEmail
-					});
-				}
 
-				ClassRoom c = db.ClassRooms.Find(classRoom.ID);
-				c.SetModified();
-				if (db.Entry(c).State != EntityState.Modified)
+				if (ModelState.IsValid)
 				{
-					db.Entry(c).State = EntityState.Modified;
-				}
+					xactn = db.Database.BeginTransaction();
 
-				try
-				{
-					db.SaveChanges();
-					return RedirectToAction("Edit", "ClassRooms", new { id = classRoom.ID });
-				}
-				catch (Exception ex)
-				{
-					string Message = "Error Saving Changes";
-					string InnerMessage = "";
-					Exception inner = ex.InnerException;
-					while (inner != null)
+					foreach (StudentImport s in classRoom.Students)
 					{
-						InnerMessage = " :: " + inner.Message;
-						inner = inner.InnerException;
+						db.Students.Add(new Student()
+						{
+							SchoolID = classRoom.SchoolID,
+							ClassRoomID = classRoom.ID,
+							FullName = s.FullName,
+							StudentNumber = s.StudentNumber,
+							Guardian1TempEmail = s.Guardian1TempEmail,
+							Guardian2TempEmail = s.Guardian2TempEmail
+						});
 					}
-					Message += InnerMessage;
 
-					ModelState.AddModelError("", Message);
+					ClassRoom c = db.ClassRooms.Find(classRoom.ID);
+					c.SetModified();
+					if (db.Entry(c).State != EntityState.Modified)
+					{
+						db.Entry(c).State = EntityState.Modified;
+					}
+
+					db.SaveChanges();
+
+					//////////////////////////////////////////////////////
+					///	Send Emails to each of the registered guardians
+					//////////////////////////////////////////////////////
+					foreach (StudentImport s in classRoom.Students)
+					{
+						try
+						{
+							if (s.Guardian1TempEmail != null)
+							{
+								SendGuardianRegistrationEmail(classRoom.ID, s.ID, s.Guardian1TempEmail);
+							}
+							if (s.Guardian2TempEmail != null)
+							{
+								SendGuardianRegistrationEmail(classRoom.ID, s.ID, s.Guardian2TempEmail);
+							}
+						}
+						catch(Exception innerEx) { throw new Exception("Unable to send Guardian Emails", innerEx); } 
+					}
+
+					xactn.Commit();
+					xactn.Dispose();
+					xactn = null;
+
+					result = RedirectToAction("Edit", "ClassRooms", new { id = classRoom.ID });
+				}
+
+			}
+			catch (Exception ex)
+			{
+				string Message = "Error Saving Changes";
+				string InnerMessage = "";
+				Exception inner = ex.InnerException;
+				while (inner != null)
+				{
+					InnerMessage = " :: " + inner.Message;
+					inner = inner.InnerException;
+				}
+				Message += InnerMessage;
+
+				ModelState.AddModelError("", Message);
+				if (xactn != null)
+				{
+					xactn.Rollback();
+					xactn.Dispose();
+					xactn = null;
 				}
 			}
-
-			return View(classRoom);
+			return result;
 		}
 
 		// GET: ClassRooms/Delete/5
