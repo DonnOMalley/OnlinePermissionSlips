@@ -17,7 +17,7 @@ function SchoolSelected(schoolID) {
 	var CallBack = function () { TemplateCallBack(originalTemplateID); };
 	GetClassRoomsForSchool(schoolID, 'ClassRoomID', 'Select Class Room', '/ClassRooms/GetSchoolClasses/');
 	if (!$('#chkTemplateBySchool').prop('checked')) {
-		GetTemplates(schoolID, null, 'PermissionSlipTemplateID', 'Select Template', '/Templates/GetTemplateList/', CallBack);
+		GetTemplates(schoolID, null, 'PermissionSlipTemplateID', 'No Template', '/Templates/GetTemplateList/', CallBack);
 	}
 }
 
@@ -26,7 +26,7 @@ function ClassSelected(classID) {
 	var CallBack = function () { TemplateCallBack(originalTemplateID); };
 	if ($('#chkTemplateBySchool').prop('checked')) {
 		var schoolID = $('#SchoolID').val();
-		GetTemplates(schoolID, classID, 'PermissionSlipTemplateID', 'Select Template', '/Templates/GetTemplateList/', CallBack);
+		GetTemplates(schoolID, classID, 'PermissionSlipTemplateID', 'No Template', '/Templates/GetTemplateList/', CallBack);
 	}
 }
 
@@ -40,7 +40,7 @@ function LimitChanged() {
 		classID = $('#ClassRoomID').val();
 		if (classID == "") { classID = -1; }
 	}
-	GetTemplates(schoolID, classID, 'PermissionSlipTemplateID', 'Select Template', '/Templates/GetTemplateList/', CallBack);
+	GetTemplates(schoolID, classID, 'PermissionSlipTemplateID', 'No Template', '/Templates/GetTemplateList/', CallBack);
 }
 
 function TemplateCallBack(originalTemplateID) {

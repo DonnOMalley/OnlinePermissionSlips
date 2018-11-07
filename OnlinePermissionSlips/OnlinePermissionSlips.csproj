@@ -571,6 +571,7 @@
     <Content Include="Scripts\ViewModelScripts\CreatePermissionSlip.js" />
     <Content Include="Scripts\ViewModelScripts\GuardianPermissionSlipReport.js" />
     <Content Include="Scripts\ViewModelScripts\PermissionSlipApproval.js" />
+    <Content Include="Scripts\ViewModelScripts\Register.js" />
     <Content Include="Scripts\ViewModelScripts\SignaturePadSupport.js" />
     <Content Include="Scripts\ViewModelScripts\TeacherPermissionSlipReport.js" />
     <Content Include="Web.config">
@@ -674,6 +675,7 @@
     <Content Include="Views\Manage\ResubscribeEmails.cshtml" />
     <Content Include="Views\Manage\EditProfile.cshtml" />
     <Content Include="Views\PermissionSlips\Print.cshtml" />
+    <Content Include="Views\Account\RegisterComplete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

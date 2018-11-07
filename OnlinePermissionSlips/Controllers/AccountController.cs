@@ -96,7 +96,7 @@ namespace OnlinePermissionSlips.Controllers
 			}
 
 			var user = await UserManager.FindAsync(model.UserName, model.Password);
-			if(user != null && user.EmailConfirmed)
+			if (user != null && user.EmailConfirmed)
 			{
 				// This doesn't count login failures towards account lockout
 				// To enable password failures to trigger account lockout, change to shouldLockout: true
@@ -115,7 +115,7 @@ namespace OnlinePermissionSlips.Controllers
 						return View(model);
 				}
 			}
-			else if(user != null)
+			else if (user != null)
 			{
 				//redirect to Email Confirmation required.
 				ModelState.AddModelError("", "Email Confirmation Required.");
@@ -176,8 +176,8 @@ namespace OnlinePermissionSlips.Controllers
 		[AllowAnonymous]
 		public ActionResult Register()
 		{
-			ViewBag.Roles = RoleManager.Roles.Where(r => !r.Name.Contains("Admin")).Select(r => new SelectListItem() { Value = r.Name, Text = r.Name }).ToList();
-			ViewBag.Schools = db.Schools.Select(s => new SelectListItem() { Value = s.SchoolID.ToString(), Text = s.SchoolName }).ToList();
+			//ViewBag.Roles = RoleManager.Roles.Where(r => !r.Name.Contains("Admin")).Select(r => new SelectListItem() { Value = r.Name, Text = r.Name }).ToList();
+			//ViewBag.Schools = db.Schools.Select(s => new SelectListItem() { Value = s.SchoolID.ToString(), Text = s.SchoolName }).ToList();
 			return View();
 		}
 
@@ -192,51 +192,47 @@ namespace OnlinePermissionSlips.Controllers
 			IdentityResult result = null;
 			if (ModelState.IsValid)
 			{
-				if ((model.RoleName != "SystemAdmin") && ((model.SchoolID == null) || (model.SchoolID == 0)))
+				user = new ApplicationUser
 				{
-					ModelState.AddModelError("Missing School", "Must Pick a School to Register");
-				}
-				else
-				{
-					user = new ApplicationUser {
-						UserName = model.UserName,
-						Email = model.Email,
-						FirstName = model.FirstName,
-						MiddleName = model.MiddleName,
-						LastName = model.LastName,
-						PhoneNumber = null
-					};
+					UserName = model.UserName,
+					Email = model.Email,
+					FirstName = model.FirstName,
+					MiddleName = model.MiddleName,
+					LastName = model.LastName,
+					PhoneNumber = null
+				};
 
-					result = await UserManager.CreateAsync(user, model.Password);
+				result = await UserManager.CreateAsync(user, model.Password);
+				if (result.Succeeded)
+				{
+					result = UserManager.AddToRole(user.Id, "Guardian");
 					if (result.Succeeded)
 					{
-						result = UserManager.AddToRole(user.Id, model.RoleName);
-						if (result.Succeeded)
-						{
-							School school = db.Schools.Find(model.SchoolID);
-							if (school != null)
-							{
-								db.AspNetUsers.Find(user.Id).Schools.Add(school);
-								db.SaveChanges();
-							}
-							//await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+						//School school = db.Schools.Find(model.SchoolID);
+						//if (school != null)
+						//{
+						//	db.AspNetUsers.Find(user.Id).Schools.Add(school);
+						//	db.SaveChanges();
+						//}
+						//await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
-							// For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-							// Send an email with this link
-							 string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-							 var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-							 await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+						// For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+						// Send an email with this link
+						string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+						var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+						await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-							return RedirectToAction("Index", "Home");
-						}
+						return View("RegisterComplete");
+
+						//return RedirectToAction("Index", "Home");
 					}
-					AddErrors(result);
 				}
+				AddErrors(result);
 			}
 
 			// If we got this far, something failed, redisplay form
-			ViewBag.Roles = RoleManager.Roles.Where(r => !r.Name.Contains("Admin")).Select(r => new SelectListItem() { Value = r.Name, Text = r.Name }).ToList();
-			ViewBag.Schools = db.Schools.Select(s => new SelectListItem() { Value = s.SchoolID.ToString(), Text = s.SchoolName }).ToList();
+			//ViewBag.Roles = RoleManager.Roles.Where(r => !r.Name.Contains("Admin")).Select(r => new SelectListItem() { Value = r.Name, Text = r.Name }).ToList();
+			//ViewBag.Schools = db.Schools.Select(s => new SelectListItem() { Value = s.SchoolID.ToString(), Text = s.SchoolName }).ToList();
 			return View(model);
 		}
 

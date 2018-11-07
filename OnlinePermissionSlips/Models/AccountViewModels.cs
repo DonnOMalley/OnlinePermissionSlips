@@ -93,12 +93,12 @@ namespace OnlinePermissionSlips.Models
 		[Display(Name = "Email")]
 		public string Email { get; set; }
 
-		[Required]
-		[Display(Name = "Role")]
-		public string RoleName { get; set; }
+		//[Required]
+		//[Display(Name = "Role")]
+		//public string RoleName { get; set; }
 
-		[Display(Name = "School")]
-		public int? SchoolID { get; set; }
+		//[Display(Name = "School")]
+		//public int? SchoolID { get; set; }
 	}
 
 	public class ResetPasswordViewModel
